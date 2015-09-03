@@ -1,4 +1,6 @@
 #include <iostream>
+#include <fstream>
+#include <limits>
 
 using namespace std;
 
@@ -145,7 +147,116 @@ bool numeroFloat(){
     return false;
 }
 
+void verificarIdentificador(){
+    char letra;
+    ifstream fe("datos.txt");
+    int estado = 0;
+    while(!fe.eof()){
+        estado = 0;
+        while(letra != ';' and !fe.eof()){
+            fe>>letra;
+            switch(estado){
+                case 0:
+                    if(letra >= 48 and letra <= 57){
+                        estado = 2;
+                    }
+                    else if((letra >= 97 and letra <= 122) or letra == '_'){
+                        estado = 1;
+                    }
+                    else{
+                        estado = 2;
+                    }
+                    break;
+                case 1:
+                    if((letra >= 97 and letra <= 122) or (letra >=48 and letra <= 57) or letra == '_'){
+                        estado = 1;
+                    }
+                    else if(letra == ';'){
+                        estado = 3;
+                    }
+                    else{
+                        estado = 2;
+                    }
+                    break;
+            }
+        }
+        if(estado == 3){
+            cout<<"Identificador correcto"<<endl;
+       }
+       else{
+            cout<<"ERROR"<<endl;
+       }
+    fe>>letra;
+    }
+}
+
+void verificarBinario(){
+    char letra;
+    ifstream fe("datos.txt");
+    int estado = 0;
+    bool flag = true;
+    fe.get(letra);
+    while(!fe.eof()){
+        estado = 0;
+        while(letra != '\n' and !fe.eof()){
+            switch(estado){
+                case 0:
+                    if(letra == 48){
+                        estado = 1;
+                    }
+                    else{
+                        estado = 4;
+                    }
+                    break;
+                case 1:
+                    if(letra == 49){
+                        estado = 2;
+                    }
+                    else if(letra == 48){
+                        estado = 1;
+                    }
+                    else{
+                        estado = 4;
+                    }
+                    break;
+                case 2:
+                    if(letra == 49){
+                        estado = 2;
+                    }
+                    else if(letra == 48){
+                        estado = 1;
+                    }
+                    else{
+                        estado = 4;
+                    }
+                    break;
+            }
+            fe.get(letra);
+        }
+        if(estado == 2){
+            cout<<"Identificador correcto"<<endl;
+        }
+        else{
+            cout<<"ERROR"<<endl;
+        }
+    fe.get(letra);
+    }
+}
+
+void fun(){
+    char letra;
+    ifstream fe("datos.txt");
+    int contador = 0;
+    while(!fe.eof()){
+        fe.get(letra);
+        cout<<letra;
+        contador++;
+        cout<<contador;
+    }
+
+}
+
 int main()
 {
-    numeroFloat();
+    verificarBinario();
 }
