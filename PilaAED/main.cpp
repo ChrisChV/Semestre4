@@ -16,16 +16,16 @@ int main()
             memoria.agregar(memoria.desapilar() + memoria.desapilar());
         }
         else if(expresion[i] == '-'){
-            int a = memoria.desapilar();
-            int b = memoria.desapilar();
+            auto a = memoria.desapilar();
+            auto b = memoria.desapilar();
             memoria.agregar(b - a);
         }
         else if(expresion[i] == '*'){
             memoria.agregar(memoria.desapilar() * memoria.desapilar());
         }
         else if(expresion[i] == '/'){
-            int a = memoria.desapilar();
-            int b = memoria.desapilar();
+            auto a = memoria.desapilar();
+            auto b = memoria.desapilar();
             memoria.agregar(b / a);
         }
     }

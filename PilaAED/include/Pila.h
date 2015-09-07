@@ -24,7 +24,7 @@ class Pila
 
 template<typename T>
 Pila<T>::Nodo::Nodo(){
-    siguiente = 0;
+    siguiente = nullptr;
 }
 template<typename T>
 Pila<T>::Nodo::Nodo(T dato){
@@ -32,12 +32,12 @@ Pila<T>::Nodo::Nodo(T dato){
 }
 template<typename T>
 Pila<T>::Pila(){
-    cabeza = 0;
+    cabeza = nullptr;
 }
 template<typename T>
 void Pila<T>::agregar(T dato){
     Pila<T>::Nodo * nuevo = new Nodo(dato);
-    if(cabeza == 0){
+    if(cabeza == nullptr){
         cabeza = nuevo;
     }
     else{
@@ -47,7 +47,7 @@ void Pila<T>::agregar(T dato){
 }
 template<typename T>
 bool Pila<T>::esVacia(){
-    if(cabeza == 0)
+    if(cabeza == nullptr)
         return true;
     return false;
 }
