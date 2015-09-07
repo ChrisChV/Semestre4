@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1441662004 source:/home/cs-unsa-lab_12/Documents/Chris/TC/Semestre4/PilaAED/main.cpp
+	<iostream>
+	<Pila.h>
+
+1441661269 /home/cs-unsa-lab_12/Documents/Chris/TC/Semestre4/PilaAED/include/Pila.h
+
+1441660242 source:/home/cs-unsa-lab_12/Documents/Chris/TC/Semestre4/PilaAED/src/Pila.cpp
+

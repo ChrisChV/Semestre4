@@ -19,6 +19,7 @@ class Lista
         Lista();
         void print();
         int size();
+        void eliminar(T dato);
         int sizePar();
         void _printR(Nodo *A);
         void printR();
@@ -35,6 +36,36 @@ class Lista
         Nodo * cabeza;
         Nodo * cola;
 };
+
+template <typename T>
+void Lista<T>::eliminar(T dato){
+    if(cabeza == nullptr){
+        return;
+    }
+    Lista<T>::Nodo * temporal = cabeza;
+    Lista<T>::Nodo * sigTemporal = cabeza;
+    if(dato == temporal->dato){
+        cabeza = cabeza->siguiente;
+        delete(temporal);
+        return;
+    }
+    sigTemporal = cabeza;
+    while(sigTemporal != cola){
+        if(dato == sigTemporal->dato){
+            temporal->siguiente = sigTemporal->siguiente;
+            delete(sigTemporal);
+            return;
+        }
+        temporal = temporal->siguiente;
+        sigTemporal = sigTemporal->siguiente;
+    }
+    if(dato == sigTemporal->dato){
+        cola = temporal;
+        temporal->siguiente = nullptr;
+        delete(sigTemporal);
+        return;
+    }
+}
 
 template <typename T>
 Lista<T> Lista<T>::intersect(Lista<T> &segundo){
