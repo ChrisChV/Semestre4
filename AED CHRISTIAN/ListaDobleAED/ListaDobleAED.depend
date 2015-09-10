@@ -1,0 +1,10 @@
+# depslib dependency file v1.0
+1441757172 source:c:\users\christofer\documents\semestre4\listadobleaed\main.cpp
+	<iostream>
+	"ListaDoble.h"
+
+1441758473 c:\users\christofer\documents\semestre4\listadobleaed\include\listadoble.h
+	"iostream"
+
+1441749301 source:c:\users\christofer\documents\semestre4\listadobleaed\src\listadoble.cpp
+
