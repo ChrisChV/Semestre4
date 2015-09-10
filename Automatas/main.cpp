@@ -333,6 +333,6 @@ bool numeroRealConTabla(){
 
 int main()
 {
-    if(identificadorConTabla())cout<<"Identificador Valido"<<endl;
+    if(numeroRealConTabla())cout<<"Identificador Valido"<<endl;
     else cout<<"Identificador No Valido"<<endl;
 }
