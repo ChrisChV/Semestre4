@@ -4,6 +4,10 @@
 
 using namespace std;
 
+bool esLetra(string::iterator &);
+bool esNumero(string::iterator &);
+
+
 bool propioIdentificador(){
     string frase;
     cin>>frase;
@@ -256,7 +260,79 @@ void fun(){
 
 }
 
+bool identificadorConTabla(){
+    string frase;
+    cin>>frase;
+    int entrada;
+    string::iterator letra = frase.begin();
+    int estado = 0;
+    int tabla[3][3] = {{2,1,-1},{-1,-1,-1},{2,2,10}};
+    do{
+        if(esLetra(letra) or *letra == '_'){
+            entrada = 0;
+        }
+        else if(esNumero(letra)){
+            entrada = 1;
+        }
+        else if(letra == frase.end()){
+            entrada = 2;
+        }
+        else{
+            return false;
+        }
+        estado = tabla[estado][entrada];
+        if(estado == -1)return false;
+        letra++;
+    }while(estado != 10);
+    return true;
+}
+
+bool esNumero(string::iterator &letra){
+    if(*letra >= 48 and *letra <= 57)return true;
+    return false;
+}
+
+bool esLetra(string::iterator &letra){
+    if(*letra >= 97 and *letra <= 122)return true;
+    return false;
+}
+
+bool numeroRealConTabla(){
+    string frase;
+    cin>>frase;
+    int entrada;
+    string::iterator letra = frase.begin();
+    int estado = 1;
+    int tabla[7][6] = {{2,-1,-1,-1,-1,-1},
+                       {2, 3, 5,-1,-1,-1},
+                       {4,-1,-1,-1,-1,-1},
+                       {4,-1, 5,-1,-1,10},
+                       {7,-1,-1, 6, 6,-1},
+                       {7,-1,-1,-1,-1,-1},
+                       {7,-1,-1,-1,-1,10}};
+    do{
+        if(esNumero(letra))
+            entrada = 0;
+        else if(letra == frase.end())
+            entrada = 5;
+        else{
+            switch(*letra){
+                case '.':entrada = 1;break;
+                case 'E':entrada = 2;break;
+                case '+':entrada = 3;break;
+                case '-':entrada = 4;break;
+                default: return false;
+            }
+        }
+        estado = tabla[estado - 1][entrada];
+        letra++;
+        if(estado == -1)return false;
+    }while(estado != 10);
+    return true;
+}
+
 int main()
 {
-    verificarBinario();
+    if(identificadorConTabla())cout<<"Identificador Valido"<<endl;
+    else cout<<"Identificador No Valido"<<endl;
 }
