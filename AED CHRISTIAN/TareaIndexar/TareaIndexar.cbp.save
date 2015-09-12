@@ -36,6 +36,7 @@
 		</Compiler>
 		<Unit filename="include/Record.h" />
 		<Unit filename="include/Table.h" />
+		<Unit filename="include/sad.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/Record.cpp" />
 		<Unit filename="src/Table.cpp" />
