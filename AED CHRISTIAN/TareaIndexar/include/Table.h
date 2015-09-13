@@ -148,7 +148,7 @@ void Table::_print(){
     }
 }
 
-void Table::_index(const char *file){
+void Table::_index(const char *file, int numero_campos){
     this->file = file;
     ifstream archivo(file);
     char linea[1000];
@@ -163,7 +163,7 @@ void Table::_index(const char *file){
         temp->fila = fila;
         strcpy(temp->key,caracter);
         m_RecordSet.push_back(temp);
-        pos += strlen(caracter) + strlen(linea) + 3;
+        pos += strlen(caracter) + strlen(linea) + numero_campos - 1;
         fila++;
     }
     auto iter = m_RecordSet.end();

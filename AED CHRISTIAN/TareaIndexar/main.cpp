@@ -7,7 +7,7 @@ using namespace std;
 
 int main()
 {
-    Table tt("datos.dat");
+    Table tt("datos.dat", 4);
     Campo campo1;
     tt.del("1996");
     tt.del("2006");
