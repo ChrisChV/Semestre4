@@ -6,10 +6,9 @@ using namespace std;
 
 int main()
 {
-    list<int> my;
-    for(int i = 0; i< 10; i++){
-        my.push_back(i);
+    string hola  = "hola";
+    string hola2 = "hola";
+    if(hola == hola2){
+        cout<<"hhhhhhhhhh";
     }
-    auto iter = my.end();
-    cout<<*iter<<endl;
 }

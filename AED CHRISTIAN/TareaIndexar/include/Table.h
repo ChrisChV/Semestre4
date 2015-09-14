@@ -16,6 +16,7 @@ class Table
         Table(const char *file);
         void _print();
         bool find(Key,Campo &);
+        bool find(Key,int, Campo &);
         bool next(Campo &);
         bool prev(Campo &);
         bool insert(Campo &);
@@ -28,9 +29,57 @@ class Table
         bool _find(Key, list<Record *>::iterator &iter, long &);
         bool _find(Key, list<Record *>::iterator &iter);
         void _llenarCampo(Campo &);
+        void _llenarCampo(char *,Campo &);
         const char * file;
         list<Record *>::iterator recordActual;
+        int numero_columnas;
 };
+
+void Table::_llenarCampo(char *linea, Campo & lista){
+    string campo;
+    for(int i = 0; i < strlen(linea); i++){
+        if(linea[i] == ',' or linea[i] == '\n'){
+            lista.push_back(campo);
+            campo.clear();
+        }
+        else{
+            campo.insert(campo.end(),linea[i]);
+        }
+    }
+    lista.push_back(campo);
+}
+
+bool Table::find(Key busqueda, int numero_columna, Campo & lista){
+    if(numero_columna > numero_columnas)return false;
+    if(numero_columna == 1)return this->find(busqueda,lista);
+    ifstream archivo(file);
+    string temporal;
+    char campo[1000];
+    int contador = 1;
+    while(archivo.getline(campo,1000)){
+        contador = 1;
+        temporal.clear();
+        for(int i = 0; i < strlen(campo); i++){
+            if(campo[i] == '\n')break;
+            if(campo[i] == ','){
+                if(contador == numero_columna){
+                    if(temporal == busqueda){
+                        _llenarCampo(campo, lista);
+                    }
+                }
+                contador++;
+                temporal.clear();
+            }
+            else{
+                temporal.insert(temporal.end(),campo[i]);
+            }
+        }
+    }
+    archivo.close();
+    if(lista.empty())return false;
+    return true;
+
+}
 
 bool Table::del(Key key){
     list<Record*>::iterator temp;
@@ -85,16 +134,12 @@ void Table::_llenarCampo(Campo & lista){
     string campo;
     while(caracter != '\n'){
         archivo.get(caracter);
-        if(caracter == ','){
+        if(caracter == ',' or caracter == '\n'){
             lista.push_back(campo);
             campo.clear();
         }
-        else if(caracter != '\n'){
+        else{
             campo.insert(campo.end(),caracter);
-        }
-        else if(caracter == '\n'){
-            lista.push_back(campo);
-            campo.clear();
         }
     }
 }
@@ -116,10 +161,10 @@ bool Table::next(Campo &lista){
 }
 
 bool Table::find(Key key, Campo &lista){
-    ifstream archivo(file);
+    recordActual = m_RecordSet.begin();
     if(!_find(key, recordActual))return false;
-    archivo.seekg((*recordActual)->inicio,std::ios::beg);
     _llenarCampo(lista);
+    return true;
 }
 
 bool Table::_find(Key key, list<Record *>::iterator &iter){
@@ -148,7 +193,7 @@ void Table::_print(){
     }
 }
 
-void Table::_index(const char *file, int numero_campos){
+void Table::_index(const char *file){
     this->file = file;
     ifstream archivo(file);
     char linea[1000];
@@ -163,13 +208,14 @@ void Table::_index(const char *file, int numero_campos){
         temp->fila = fila;
         strcpy(temp->key,caracter);
         m_RecordSet.push_back(temp);
-        pos += strlen(caracter) + strlen(linea) + numero_campos - 1;
+        pos += strlen(caracter) + strlen(linea) + numero_columnas - 1;
         fila++;
     }
     auto iter = m_RecordSet.end();
     iter--;
     m_RecordSet.erase(iter--);
     archivo.close();
+    recordActual = m_RecordSet.begin();
 }
 
 
@@ -178,6 +224,15 @@ Table::Table(){
 }
 
 Table::Table(const char *file){
+    numero_columnas = 0;
+    ifstream archivo(file);
+    char linea[1000];
+    archivo.getline(linea, 1000);
+    for(int i = 0; i < strlen(linea); i++){
+        if(linea[i] == ',')numero_columnas++;
+    }
+    numero_columnas++;
+    archivo.close();
     _index(file);
 }
 

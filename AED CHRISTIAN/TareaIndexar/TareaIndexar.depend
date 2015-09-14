@@ -15,13 +15,13 @@
 
 1441840313 source:c:\users\christofer\documents\semestre4\tareaindexar\src\table.cpp
 
-1442036632 source:c:\users\christofer\documents\semestre4\aed christian\tareaindexar\main.cpp
+1442197117 source:c:\users\christofer\documents\semestre4\aed christian\tareaindexar\main.cpp
 	<iostream>
 	<Table.h>
 	"list"
 	"sad.h"
 
-1442036677 c:\users\christofer\documents\semestre4\aed christian\tareaindexar\include\table.h
+1442197279 c:\users\christofer\documents\semestre4\aed christian\tareaindexar\include\table.h
 	<list>
 	<fstream>
 	<Record.h>
@@ -37,6 +37,6 @@
 
 1441840313 source:c:\users\christofer\documents\semestre4\aed christian\tareaindexar\src\table.cpp
 
-1441925220 c:\users\christofer\documents\semestre4\aed christian\tareaindexar\include\sad.h
+1442197282 c:\users\christofer\documents\semestre4\aed christian\tareaindexar\include\sad.h
 	"iostream"
 
