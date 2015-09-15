@@ -237,7 +237,7 @@ Table::Table(const char *file){
 }
 
 Table::~Table(){
-
+    delete(file);
 }
 
 #endif // TABLE_H

@@ -9,7 +9,7 @@ int main()
 {
     Table cursos("cursos.dat");
     Campo campo;
-    cursos.find("INT",2,campo);
+    cout<<cursos.find("1001102",1,campo)<<endl;
     for(auto iter = campo.begin(); iter != campo.end(); ++iter){
         cout<<*iter<<endl;
     }
