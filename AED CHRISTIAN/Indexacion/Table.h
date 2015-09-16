@@ -53,6 +53,10 @@ bool Table::find(Key busqueda, int numero_columna, Campo & lista){
     if(numero_columna > numero_columnas)return false;
     if(numero_columna == 1)return this->find(busqueda,lista);
     ifstream archivo(file);
+    if(archivo.fail()){
+        cout<<"EL ARCHIVO NO SE PUDO ABRIR EN find"<<endl;
+        return false;
+    }
     string temporal;
     char campo[1000];
     int contador = 1;
@@ -86,7 +90,15 @@ bool Table::del(Key key){
     if(!this->_find(key,temp,linea))return false;
     char campo[1000];
     ifstream archivo(file);
-    ofstream archivoTemp("temp.dat");
+    if(archivo.fail()){
+        cout<<"NO SE PUDO ABRIR EN DEL"<<endl;
+        return false;
+    }
+    ofstream archivoTemp("D:/temp.dat");
+    if(archivoTemp.fail()){
+        cout<<"NO SE PUDO ABRIR EN DEL"<<endl;
+        return false;
+    }
     m_RecordSet.erase(temp);
     for(int i = 0; i < linea; i++){
         archivo.getline(campo, 1000);
@@ -99,12 +111,12 @@ bool Table::del(Key key){
     archivo.close();
     archivoTemp.close();
     remove(file);
-    rename("temp.dat",file);
-
+    rename("D:/temp.dat",file);
     return true;
 }
 
 bool Table::insert(Campo &lista){
+    if(lista.size() != numero_columnas)return false;
     list<Record*>::iterator temp;
     char key[5];
     for(int i = 0; i < lista.front().size(); i++){
@@ -112,6 +124,10 @@ bool Table::insert(Campo &lista){
     }
     if(this->_find(key,temp))return false;
     ofstream archivo(file, ios::app);
+    if(archivo.fail()){
+        cout<<"EL ARCHIVO NO SE PUDO ABRIR EN insert";
+        return false;
+    }
     Record *nuevo = new Record();
     strcpy(nuevo->key,key);
     nuevo->inicio = archivo.tellp();
@@ -128,6 +144,10 @@ bool Table::insert(Campo &lista){
 
 void Table::_llenarCampo(Campo & lista){
     ifstream archivo(file);
+    if(archivo.fail()){
+        cout<<"EL ARCHIVO NO SE PUDO ABRIR EN _llenarCampo"<<endl;
+        return;
+    }
     archivo.seekg((*recordActual)->inicio,std::ios::beg);
     char caracter = ' ';
     string campo;

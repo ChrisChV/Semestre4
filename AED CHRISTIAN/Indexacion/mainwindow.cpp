@@ -51,10 +51,9 @@ void MainWindow::on_pushButton_8_clicked()
 void MainWindow::on_pushButton_7_clicked()
 {
     //string tmp = ui->lineEdit->text().toStdString();
-
-    Table tt("C:/cursos.dat");
+    Table tt("D:/cursos.dat");
     Campo campo1;
-    if(tt.find("1001105",1,campo1)){
+    if(tt.find("PROYECTO I",2,campo1)){
         qDebug("hola");
     }
     else{
@@ -64,14 +63,16 @@ void MainWindow::on_pushButton_7_clicked()
     for(auto iter = campo1.begin(); iter != campo1.end(); ++iter){
         cout<<*iter<<endl;
     }
+    cout<<campo1.back()<<endl;
     ui->lineEdit_6->setText(QString::fromStdString(campo1.back()));
     campo1.pop_back();
     ui->lineEdit_5->setText(QString::fromStdString(campo1.back()));
-    campo1.pop_back();
+    campo1.pop_back();    
     ui->lineEdit_4->setText(QString::fromStdString(campo1.back()));
     campo1.pop_back();
     ui->lineEdit_3->setText(QString::fromStdString(campo1.back()));
     campo1.pop_back();
     ui->lineEdit_2->setText(QString::fromStdString(campo1.back()));
     campo1.clear();
+
 }
