@@ -1,0 +1,11 @@
+# depslib dependency file v1.0
+1442364473 source:c:\users\christofer\documents\semestre4\tree\src\tree.cpp
+
+1442377452 source:c:\users\christofer\documents\semestre4\tree\main.cpp
+	<iostream>
+	"Tree.h"
+
+1442377883 c:\users\christofer\documents\semestre4\tree\include\tree.h
+	"iostream"
+	"list"
+
