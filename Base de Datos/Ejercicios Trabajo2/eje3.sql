@@ -47,16 +47,16 @@ add constraint pk_AM
 primary key(Cod);
 
 alter table Alumno_Modulo
-add constraint pk_AM_Modulos
+add constraint fk_AM_Modulos
 foreign key(CodMod)
 references Modulos(CodMod);
 
 alter table Alumno_Modulo
-add constraint pk_AM_Alumno
+add constraint fk_AM_Alumno
 foreign key(Expediente)
 references Alumno(Expediente);
 
 alter table Modulos
-add constraint pk_Modulos_Profesores
+add constraint fk_Modulos_Profesores
 foreign key(DNI)
 references Profesores(DNI);
