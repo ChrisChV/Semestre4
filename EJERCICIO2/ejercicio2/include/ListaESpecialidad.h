@@ -15,6 +15,7 @@ class ListaESpecialidad
         };
         ListaESpecialidad();
         void insertar(string);
+        void print();
         bool find(string, Especialidad *&);
         void agregarPaciente(string, string, int);
         virtual ~ListaESpecialidad();
@@ -23,6 +24,14 @@ class ListaESpecialidad
         Especialidad *inicio;
         Especialidad *fin;
 };
+
+void ListaESpecialidad::print(){
+    Especialidad * temp = inicio;
+    while(temp){
+        cout<<temp->nombreEspecialidad<<endl;
+        temp = temp->siguiente;
+    }
+}
 
 void ListaESpecialidad::agregarPaciente(string nombre, string especialidad, int gravedad){
     Especialidad * temp;
@@ -62,12 +71,11 @@ ListaESpecialidad::Especialidad::Especialidad(){
 }
 
 ListaESpecialidad::~ListaESpecialidad(){
-    inicio = nullptr;
-    fin = nullptr;
 }
 
 ListaESpecialidad::ListaESpecialidad(){
-
+    inicio = nullptr;
+    fin = nullptr;
 }
 
 #endif // LISTAESPECIALIDAD_H

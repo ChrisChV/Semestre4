@@ -14,8 +14,9 @@ int main()
     especialidades.insertar("Psicologia");
     especialidades.insertar("Pediatria");
     especialidades.insertar("Medicina General");
+    especialidades.print();
     especialidades.agregarPaciente("Chris","Psicologia",rand() % 10 + 1);
-    especialidades.agregarPaciente("Nicoll, ""Medicina General", rand() % 10 + 1);
+    especialidades.agregarPaciente("Nicoll", "Medicina General", rand() % 10 + 1);
     especialidades.agregarPaciente("Juan","Psicologia",rand() % 10 + 1);
     especialidades.agregarPaciente("Carlos", "Pediatria", rand() % 10 + 1);
     especialidades.agregarPaciente("Ruben","Psicologia",rand() % 10 + 1);
