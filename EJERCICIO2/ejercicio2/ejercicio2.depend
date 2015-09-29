@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1443499776 source:/home/chris/Documentos/Semestre/Semestre4/EJERCICIO2/ejercicio2/src/ColaPrioridad.cpp
+
+1443505346 source:/home/chris/Documentos/Semestre/Semestre4/EJERCICIO2/ejercicio2/main.cpp
+	<iostream>
+	<algorithm>
+	"vector"
+	"ColaPrioridad.h"
+
+1443505320 /home/chris/Documentos/Semestre/Semestre4/EJERCICIO2/ejercicio2/include/ColaPrioridad.h
+	"vector"
+	<algorithm>
+
