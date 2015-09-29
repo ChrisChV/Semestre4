@@ -21,10 +21,15 @@ class ColaPrioridad
         virtual ~ColaPrioridad();
         void insertar(string, int);
         Paciente* pop();
+        Paciente* front();
     protected:
     private:
         vector<Paciente *> cola;
 };
+
+ColaPrioridad::Paciente * ColaPrioridad::front(){
+    return cola.front();
+}
 
 int ColaPrioridad::size(){
     return cola.size();
@@ -35,6 +40,8 @@ void ColaPrioridad::print(){
     }
     cout<<endl;
 }
+
+
 
 ColaPrioridad::Paciente * ColaPrioridad::pop(){
     if(cola.empty())return nullptr;

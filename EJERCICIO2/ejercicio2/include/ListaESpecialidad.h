@@ -1,6 +1,6 @@
 #ifndef LISTAESPECIALIDAD_H
 #define LISTAESPECIALIDAD_H
-
+#include "ColaPrioridad.h"
 
 class ListaESpecialidad
 {
@@ -10,16 +10,34 @@ class ListaESpecialidad
                 Especialidad();
                 Especialidad(string);
                 string nombreEspecialidad;
+                ColaPrioridad pacientes;
                 Especialidad *siguiente;
         };
         ListaESpecialidad();
         void insertar(string);
+        bool find(string, Especialidad *&);
+        void agregarPaciente(string, string, int);
         virtual ~ListaESpecialidad();
     protected:
     private:
         Especialidad *inicio;
         Especialidad *fin;
 };
+
+void ListaESpecialidad::agregarPaciente(string nombre, string especialidad, int gravedad){
+    Especialidad * temp;
+    if(!this->find(especialidad,temp))return;
+    temp->pacientes.insertar(nombre, gravedad);
+}
+
+bool ListaESpecialidad::find(string nombre,Especialidad *&especialidad){
+    especialidad = inicio;
+    while(especialidad){
+        if(especialidad->nombreEspecialidad == nombre)return true;
+        especialidad = especialidad->siguiente;
+    }
+    return false;
+}
 
 void ListaESpecialidad::insertar(string nombre){
     Especialidad * nuevo = new Especialidad(nombre);
@@ -40,7 +58,7 @@ ListaESpecialidad::Especialidad::Especialidad(string nombre){
 
 ListaESpecialidad::Especialidad::Especialidad(){
     siguiente = nullptr;
-    nombreEspecialidad == nullptr;
+    nombreEspecialidad = nullptr;
 }
 
 ListaESpecialidad::~ListaESpecialidad(){
