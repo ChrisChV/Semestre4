@@ -15,7 +15,9 @@ class ListaESpecialidad
         };
         ListaESpecialidad();
         void insertar(string);
+        void printAll();
         void print();
+        void mostrarPacientes(string);
         bool find(string, Especialidad *&);
         void agregarPaciente(string, string, int);
         virtual ~ListaESpecialidad();
@@ -24,6 +26,34 @@ class ListaESpecialidad
         Especialidad *inicio;
         Especialidad *fin;
 };
+
+void ListaESpecialidad::printAll(){
+    if(!inicio)return;
+    Especialidad *temp = inicio;
+    while(temp){
+        cout<<"Pacientes de "<<temp->nombreEspecialidad<<": "<<endl;
+        ColaPrioridad pTemp = temp->pacientes;
+        auto a = pTemp.size();
+        for(int i = 0; i < a; i++){
+            cout<<pTemp.pop()->nombrePaciente<<endl;
+        }
+        temp = temp->siguiente;
+    }
+
+}
+
+void ListaESpecialidad::mostrarPacientes(string especialidad){
+    Especialidad * temp;
+    if(!find(especialidad, temp)){
+        cout<<"La especialidad no existe"<<endl;
+        return;
+    }
+    ColaPrioridad pTemp = temp->pacientes;
+    auto a = pTemp.size();
+    for(int i = 0; i < a; i++){
+        cout<<pTemp.pop()->nombrePaciente<<endl;
+    }
+}
 
 void ListaESpecialidad::print(){
     Especialidad * temp = inicio;
