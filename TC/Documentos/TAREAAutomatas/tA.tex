@@ -8,6 +8,8 @@
 \usepackage{listings}
 \definecolor{mygreen}{rgb}{0,0.6,0}
 \definecolor{lbcolor}{rgb}{0.9,0.9,0.9}
+\DeclareGraphicsExtensions{.pdf,.png,.eps}
+\usepackage{epstopdf}
 
 \lstset{
 backgroundcolor=\color{lbcolor},
@@ -34,9 +36,25 @@ backgroundcolor=\color{lbcolor},
 %        \lstdefinestyle{C++}{language=C++,style=numbers}’.
 }
 
+
 \begin{document}
 
-\section{Funciones Adicionales}
+\section{Problema}
+
+Codificar los siguientes autómatas por Diagrama de Transiciones y por Tabla de Transiciones:
+
+\begin{itemize}
+
+\item Autómata que verifique la correcta sintaxis de un identificador.
+\item Autómate que verifique la correcta sintaxis de un número real.
+
+\end{itemize}
+
+\section{Código} 
+
+\subsection{Funciones Adicionales}
+
+Las funciones que se muestran a continuacíón son utilizadas para saber si un char constante o el contenido de un iterador de string, es un número o una letra.
 
 \begin{lstlisting}
 
@@ -61,65 +79,55 @@ bool esLetra(string::iterator &letra){
 
 \end{lstlisting}
 
-\section{Verificar Identificador Forma 1}
+\subsection{Verificar Identificador con Diagrama de Transiciones}
 
 \begin{lstlisting}
 
-void verificarBinario(){
+void verificarIdentificador(){
     char letra;
     ifstream fe("datos.txt");
     int estado = 0;
-    bool flag = true;
-    fe.get(letra);
     while(!fe.eof()){
         estado = 0;
-        while(letra != '\n' and !fe.eof()){
+        while(letra != ';' and !fe.eof()){
+            fe>>letra;
             switch(estado){
                 case 0:
-                    if(letra == 48){
+                    if(letra >= 48 and letra <= 57){
+                        estado = 2;
+                    }
+                    else if((letra >= 97 and letra <= 122) or letra == '_'){
                         estado = 1;
                     }
                     else{
-                        estado = 4;
+                        estado = 2;
                     }
                     break;
                 case 1:
-                    if(letra == 49){
-                        estado = 2;
-                    }
-                    else if(letra == 48){
+                    if((letra >= 97 and letra <= 122) or (letra >=48 and letra <= 57) or letra == '_'){
                         estado = 1;
                     }
-                    else{
-                        estado = 4;
+                    else if(letra == ';'){
+                        estado = 3;
                     }
-                    break;
-                case 2:
-                    if(letra == 49){
+                    else{
                         estado = 2;
-                    }
-                    else if(letra == 48){
-                        estado = 1;
-                    }
-                    else{
-                        estado = 4;
                     }
                     break;
             }
-            fe.get(letra);
         }
-        if(estado == 2){
+        if(estado == 3){
             cout<<"Identificador correcto"<<endl;
-        }
-        else{
+       }
+       else{
             cout<<"ERROR"<<endl;
-        }
-    fe.get(letra);
+       }
+    fe>>letra;
     }
 }
 \end{lstlisting}
 
-\section{Verificar Identificador Forma2}
+\subsection{Verificar Identificador con tabla de Transiciones}
 
 \begin{lstlisting}
 bool identificadorConTabla(){
@@ -150,7 +158,7 @@ bool identificadorConTabla(){
 }
 \end{lstlisting}
 
-\section{Verificar Número Real Forma 1}
+\subsection{Verificar Número Real con Diagrama de Transiciones}
 
 \begin{lstlisting}
 bool numeroReal(){
@@ -236,7 +244,8 @@ bool numeroReal(){
 }
 \end{lstlisting}
 
-\section{Verificar Número Real Forma 2}
+\subsection{Verificar Número Real cond Tabla de Transiciones}
+
 
 \begin{lstlisting}
 bool numeroRealConTabla(){
@@ -274,5 +283,56 @@ bool numeroRealConTabla(){
 }
 
 \end{lstlisting}
+
+\section{Ejemplos}
+
+\subsection{Verificar Identificador con Diagrama de Transiciones}
+
+El archivo "datos.txt" tiene el siguiente contenido.
+
+\begin{itemize}
+\item temp;
+\item temp1234;
+\item 1234temp;
+\item \_ 123;
+\end{itemize}
+
+\newpage
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{imagenes/1.eps}
+\caption{Ejemplo 1}
+\end{figure}
+
+\subsection{Verificar Identificador con tabla de Transiciones}
+
+Para este ejemplo usaremos los mismos identificadores del archivo "datos.txt" cuyo contenido se mostro anteriormente.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{imagenes/2.eps}
+\caption{Ejemplo 2}
+\end{figure}
+\newpage
+
+\subsection{Verificar Número Real con Diagrama de Transiciones}
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{imagenes/3.eps}
+\caption{Ejemplo 3}
+\end{figure}
+
+
+
+\subsection{Verificar Número Real cond Tabla de Transiciones}
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{imagenes/4.eps}
+\caption{Ejemplo 4}
+\end{figure}
+
 
 \end{document}

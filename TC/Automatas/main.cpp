@@ -426,6 +426,8 @@ bool numeroRealConTabla(){
 
 int main()
 {
-    if(numeroReal())cout<<"Identificador Valido"<<endl;
+    while(true){
+    if(numeroRealConTabla())cout<<"Identificador Valido"<<endl;
     else cout<<"Identificador No Valido"<<endl;
+    }
 }
