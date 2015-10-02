@@ -33,6 +33,14 @@ template <typename T>
 T getMin(vector<T> &);
 template <typename T>
 void deleteMin(vector<T> &);
+template <typename T>
+void insert(vector<T> &vec, T);
+
+template <typename T>
+void minHeapinsert(vector<T> &vec, T valor){
+    vec.pop_back(valor);
+    minHeapDecreaseKey(vec, vec.size() - 1);
+}
 
 template <typename T>
 void deleteMin(vector<T> &vec){
