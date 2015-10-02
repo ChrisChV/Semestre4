@@ -27,7 +27,32 @@ template <typename T>
 void print(vector<T> &);
 template <typename T>
 void minHeapDecreaseKey(vector<T> &, int);
+template <typename T>
+void maxHeapDeceaseKey(vector<T> &, int);
+template <typename T>
+T getMin(vector<T> &);
+template <typename T>
+void deleteMin(vector<T> &);
 
+template <typename T>
+void deleteMin(vector<T> &vec){
+    swap(vec[0], vec[vec.size - 1]);
+    vec.pop_back();
+    minheapFy(vec,0);
+}
+
+template <typename T>
+T getMin(vector<T> &vec){
+    if(vec.empty())return;
+    return vec.front();
+}
+
+template <typename T>
+void maxHeapDeceaseKey(vector<T> &vec, int index){
+    if(index == 0)return;
+    if(vec[index] < vec[_padre(index)])swap(vec[index],vec[_padre(index)]);
+    maxHeapDeceaseKey(vec,_padre(index));
+}
 
 template<typename T>
 void minHeapDecreaseKey(vector<T> &vec, int index){
@@ -96,7 +121,7 @@ int _izquierda(int index){
 }
 
 int _padre(int index){
-    return (index - 1)/2
+    return (index - 1)/2;
 }
 template <typename T>
 void minheapFy(vector<T> &vec, int index){
