@@ -24,6 +24,7 @@ float convertirNumero(string numero){
 }
 int main()
 {
+    while(true){
     Pila<float> memoria;
     string expresion;
     string temp;
@@ -66,5 +67,6 @@ int main()
             }
         }
     }
-    cout<<memoria.desapilar();
+    cout<<memoria.desapilar()<<endl;
+    }
 }

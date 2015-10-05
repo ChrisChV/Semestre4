@@ -14,7 +14,7 @@ backgroundcolor=\color{lbcolor},
     tabsize=4,    
 %   rulecolor=,
     language=[GNU]C++,
-        basicstyle=\tiny,
+        basicstyle=\scriptsize,
         aboveskip={1.5\baselineskip},
         columns=fixed,
         showstringspaces=false,
@@ -22,6 +22,7 @@ backgroundcolor=\color{lbcolor},
         breaklines=true,
         prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
         frame=single,
+        numbers=left,
         showtabs=false,
         showspaces=false,
         showstringspaces=false,
@@ -35,18 +36,13 @@ backgroundcolor=\color{lbcolor},
 
 \begin{document}
 
-\twocolumn[
-
-\begin{@twocolumnfalse}
 \section{Problema}
 
 En un archivo de texto plano se tine una cola de trabajos esperando su impresión.
 El planificador del servicio de impresión decide atender segun la cantidad de hojas
 Su política es de imprimir los trabajos que tienen menos hojas. Realice un programa que ayude al
-servicio de impresión a establecer la orden de impresión utilizando la estructura de datos Montículo.\\ \\
+servicio de impresión a establecer la orden de impresión utilizando la estructura de datos Montículo.
 
-\end{@twocolumnfalse}
-]
 \section{Código}
 
 \subsection{Monticulo.h}
@@ -128,7 +124,7 @@ void Monticulo::ingresar(int valor){
     int pos = monti.size() - 1;
     while(pos > 0){
         if(monti[pos] < monti[(pos - 1) / 2]){
-            auto temp = monti[pos\onecolumn];
+            auto temp = monti[pos];
             monti[pos] = monti[(pos - 1) / 2];
             monti[(pos - 1) / 2] = temp;
         }
@@ -139,7 +135,6 @@ void Monticulo::ingresar(int valor){
 #endif // MONTICULO_H
 
 \end{lstlisting}
-\newpage
 
 \subsection{Main.cpp}
 
@@ -222,10 +217,7 @@ int main()
     if(archivo.fail()){
         cout<<"No se pudo abrir el archivo"<<endl;
         return 0;
-    }t1 7 hojas
-t2 15 hojas
-t3 4 hojas
-t4 20 hojas
+    }
     char linea[128];
     int numberLine = 0;
     while(archivo.getline(linea,128)){
@@ -248,15 +240,9 @@ t4 20 hojas
 
 \end{lstlisting}
 
-
-
-\onecolumn
-
 \section{Ejemplos}
 
 Para probar el programa, se utilizó un archivo de texto plano llamado ``hojas.txt'' con el siguiente contenido:
-
-
 
 \begin{itemize}
  \item t1 7 hojas
@@ -265,9 +251,7 @@ Para probar el programa, se utilizó un archivo de texto plano llamado ``hojas.t
 \item t4 20 hojas
 \end{itemize}
 
-\begin{figure}[h]
- \centering
- \includegraphics[scale=0.5]{imagenes/1.eps}
- \caption{Ejemplo}
-\end{figure}
+
+
+
 \end{document}

@@ -6,17 +6,29 @@
 \usepackage{graphicx}
 \usepackage{multirow}
 \usepackage{listings}
+\usepackage{vmargin}
+\graphicspath{ {imagenes/} }
 \definecolor{mygreen}{rgb}{0,0.6,0}
 \definecolor{lbcolor}{rgb}{0.9,0.9,0.9}
-\DeclareGraphicsExtensions{.pdf,.png,.eps}
-\usepackage{epstopdf}
+
+
+
+\setpapersize{A4}
+\setmargins{2.5cm}       % margen izquierdo
+{1.5cm}                        % margen superior
+{16.5cm}                      % anchura del texto
+{23.42cm}                    % altura del texto
+{10pt}                           % altura de los encabezados
+{1cm}                           % espacio entre el texto y los encabezados
+{0pt}                             % altura del pie de página
+{2cm}     
 
 \lstset{
 backgroundcolor=\color{lbcolor},
     tabsize=4,    
 %   rulecolor=,
     language=[GNU]C++,
-        basicstyle=\scriptsize,
+        basicstyle=\tiny,
         aboveskip={1.5\baselineskip},
         columns=fixed,
         showstringspaces=false,
@@ -24,7 +36,6 @@ backgroundcolor=\color{lbcolor},
         breaklines=true,
         prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
         frame=single,
-        numbers=left,
         showtabs=false,
         showspaces=false,
         showstringspaces=false,
@@ -35,9 +46,4 @@ backgroundcolor=\color{lbcolor},
         numberstyle=\color[rgb]{0.205, 0.142, 0.73},
 %        \lstdefinestyle{C++}{language=C++,style=numbers}’.
 }
-
-
-
-\begin{document}
-
 \end{document}

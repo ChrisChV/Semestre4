@@ -22,6 +22,7 @@ backgroundcolor=\color{lbcolor},
         breaklines=true,
         prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
         frame=single,
+        numbers=left,
         showtabs=false,
         showspaces=false,
         showstringspaces=false,
@@ -36,15 +37,11 @@ backgroundcolor=\color{lbcolor},
 
 \begin{document}
 
-
-
 \section{Problema}
 
-Hacer una calculadora que procese operaciones simples utilizando la estructura de datos Pila.
 
-\section{Código}
 
-\subsection{Pila.h}
+\section{Pila.h}
 
 \begin{lstlisting}
 #ifndef PILA_H
@@ -58,7 +55,7 @@ class Pila
         class Nodo{
             public:
                 Nodo();
-                Nodo(T dato);prosece
+                Nodo(T dato);
                 T dato;
                 Nodo *siguiente;
             private:
@@ -116,7 +113,7 @@ T Pila<T>::desapilar(){
 
 \end{lstlisting}
 
-\subsection{main.cpp}
+\section{main.cpp}
 
 \begin{lstlisting}
 
@@ -191,18 +188,9 @@ int main()
     cout<<memoria.desapilar();
 }
 
+
+
 \end{lstlisting}
-
-\onecolumn
-
-\section{Ejemplo}
-
-\begin{figure}[h]
- \centering
- \includegraphics[scale=0.5]{imagenes/1.eps}
- \caption{EJemplo}
-\end{figure}
-
 
 \end{document}
 

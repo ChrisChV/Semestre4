@@ -19,5 +19,7 @@ int main()
     especialidades.agregarPaciente("Juan","Psicologia",rand() % 10 + 1);
     especialidades.agregarPaciente("Carlos", "Pediatria", rand() % 10 + 1);
     especialidades.agregarPaciente("Ruben","Psicologia",rand() % 10 + 1);
+    especialidades.mostrarPacientes("Psicologia");
+    cout<<endl;
     especialidades.printAll();
 }
