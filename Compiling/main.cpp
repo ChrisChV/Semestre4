@@ -7,8 +7,7 @@ using namespace std;
 int main()
 {
     string hola  = "hola";
-    string hola2 = "hola";
-    if(hola == hola2){
-        cout<<"hhhhhhhhhh";
-    }
+    string dot = hola + ".dot";
+    cout<<dot<<endl;
+
 }
