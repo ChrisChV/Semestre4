@@ -4,6 +4,8 @@
 #include "iostream"
 #include "algorithm"
 
+#define MENOSINFINITO -1000000000000
+
 using namespace std;
 
 template <typename T>
@@ -35,9 +37,9 @@ class BinomialHeap
         };
         BinomialHeap();
         BinomialHeap(string);
-        void deleteRoot(Root **);
+        void deleteRoot(Root **&);
         BinomialHeap(bool, string);
-        Root *getInicio();
+        Root *& getInicio();
         void print(string);
         void print(string, Root*&);
         void decreasekey(Nodo *);
@@ -46,6 +48,9 @@ class BinomialHeap
         void deleteTree(T);
         void insert(T valor);
         void uni(Root *&);
+        void deleteMin();
+        void deleteNodo(T);
+        T returnMin();
         virtual ~BinomialHeap();
     protected:
     private:
@@ -53,19 +58,128 @@ class BinomialHeap
         bool animation;
         string name;
         void _merge(Root *&);
-        void _intercambio(Root *, Root *);
+        void _herencia(Root *, Root *);
         void _createHeap(BinomialHeap &, Nodo*);
+        bool searchMin(Root **&);
 };
-
-void BinomialHeap::_createHeap(BinomialHeap & heap, Nodo * nodo){
-
+template <typename T>
+T BinomialHeap<T>::returnMin(){
+    try{
+        Root ** result;
+        if(!searchMin(result)){
+            string e = "La lista esta vacía";
+            throw(e);
+        }
+        return (*result)->contenido->valor;
+    }
+    catch(string e){
+        cout<<e<<endl;
+    }
 }
 
-void BinomialHeap::deleteRoot(Root **root){
-
+template <typename T>
+void BinomialHeap<T>::deleteNodo(T valor){
+    Nodo ** nodo;
+    if(!this->find(valor,nodo))return;
+    (*nodo)->valor = MENOSINFINITO;
+    decreasekey(*nodo);
+    Root ** menor;
+    deleteMin();
 }
 
-void BinomialHeap::decreasekey(Nodo * nodo){
+template <typename T>
+void BinomialHeap<T>::deleteMin(){
+    static BinomialHeap secondHeap("seconTemp");
+    Root **root;
+    if(!searchMin(root))return;
+
+    if(!(*root)->contenido){
+        cout<<"asjkdjaskdjakj"<<endl;
+    }
+    _createHeap(secondHeap, (*root)->contenido->hijo);
+
+    //*root = (*root)->siguiente;
+
+    Root * a = nullptr;
+    Root * b = inicio;
+    while(b){
+        if(b == (*root))break;
+        if(a == nullptr){
+            a = inicio;
+        }
+        else a = a->siguiente;
+        b = b->siguiente;
+    }
+    if(!a){
+        inicio = b->siguiente;
+    }
+    else{
+        a->siguiente = b->siguiente;
+    }
+
+
+    auto iter = inicio;
+    while(iter){
+        cout<<"hola->"<<iter->contenido->valor<<endl;
+        iter = iter->siguiente;
+    }
+    print("tercero");
+    ///temp->destruirme();
+    secondHeap.print("segundo");
+    uni(secondHeap.inicio);
+    print("cuarto");
+}
+
+template <typename T>
+bool BinomialHeap<T>::searchMin(Root **&root){
+    if(!inicio)return false;
+    auto menor = inicio;
+    auto iter = inicio->siguiente;
+    while(iter){
+        if(iter->contenido->valor < menor->contenido->valor){
+            menor = iter;
+        }
+        iter = iter->siguiente;
+    }
+    root = &(menor);
+    cout<<(*root)->contenido->valor<<endl;
+    return true;
+}
+
+template <typename T>
+void BinomialHeap<T>::_createHeap(BinomialHeap & heap, Nodo * hijoPrimerizo){
+    if(!hijoPrimerizo)return;
+    auto iter = hijoPrimerizo;
+    heap.getInicio() = new Root(iter);
+    iter = iter->hermano;
+    while(iter){
+        auto temp = heap.getInicio();
+        heap.getInicio() = new Root(iter);
+        heap.getInicio()->siguiente = temp;
+        iter = iter->hermano;
+    }
+}
+
+template <typename T>
+void BinomialHeap<T>::deleteRoot(Root **&root){
+    BinomialHeap secondHeap("seconTemp");
+    _createHeap(secondHeap, (*root)->contenido->hijo);
+    auto temp =  *root;
+    cout<<(*root)->contenido->valor<<endl;
+    *root = (*root)->siguiente;
+    auto iter = inicio;
+    while(iter){
+        cout<<"hola->"<<iter->contenido->valor<<endl;
+        iter = iter->siguiente;
+    }
+    print("tercero");
+    ///temp->destruirme();
+    secondHeap.print("segundo");
+    //uni(secondHeap.getInicio());
+}
+
+template <typename T>
+void BinomialHeap<T>::decreasekey(Nodo * nodo){
     while(nodo->padre){
         if(nodo->valor < nodo->padre->valor){
             swap(nodo->valor, nodo->padre->valor);
@@ -74,11 +188,8 @@ void BinomialHeap::decreasekey(Nodo * nodo){
     }
 }
 
-void BinomialHeap::deleteRoot(Root **&root){
-
-}
-
-bool BinomialHeap::Nodo::find(T valor, Nodo **& nodo){
+template <typename T>
+bool BinomialHeap<T>::Nodo::find(T valor, Nodo **& nodo){
     if(this->valor == valor)return true;
     if(this->hermano){
         nodo = &(this->hermano);
@@ -91,7 +202,8 @@ bool BinomialHeap::Nodo::find(T valor, Nodo **& nodo){
     return false;
 }
 
-bool BinomialHeap::find(T valor, Nodo **& nodo){
+template <typename T>
+bool BinomialHeap<T>::find(T valor, Nodo **& nodo){
     Root * iter = inicio;
     nodo = &(inicio->contenido);
     while(iter){
@@ -102,7 +214,8 @@ bool BinomialHeap::find(T valor, Nodo **& nodo){
     return false;
 }
 
-bool BinomialHeap::findTree(T valor, Root **&iter){
+template <typename T>
+bool BinomialHeap<T>::findTree(T valor, Root **&iter){
     iter = &inicio;
     while(*iter){
         if((*iter)->contenido->valor == valor) return true;
@@ -111,7 +224,8 @@ bool BinomialHeap::findTree(T valor, Root **&iter){
     return false;
 }
 
-void BinomialHeap::deleteTree(T valor){
+template <typename T>
+void BinomialHeap<T>::deleteTree(T valor){
     Root ** root;
     if(!findTree(valor, root))return;
     Root * temp =  *root;
@@ -119,14 +233,15 @@ void BinomialHeap::deleteTree(T valor){
     temp->destruirme();
 }
 
-void BinomialHeap::insert(T valor){
+template <typename T>
+void BinomialHeap<T>::insert(T valor){
     Root *nuevo = new Root(new Nodo(valor));
     uni(nuevo);
 }
 
 template <typename T>
 void BinomialHeap<T>::Nodo::print(ofstream &archivo){
-    archivo<<this->padre->valor<<"->"<<this->valor;
+    archivo<<this->padre->valor<<"->"<<this->valor<<endl;
     if(this->hermano){
         this->hermano->print(archivo);
     }
@@ -138,12 +253,19 @@ void BinomialHeap<T>::Nodo::print(ofstream &archivo){
 
 template <typename T>
 void BinomialHeap<T>::Root::print(ofstream &archivo){
-    if(this->contenido->hijo){
-        this->contenido->hijo->print(archivo);
+    if(this->contenido){
+        if(this->contenido->hijo)
+            this->contenido->hijo->print(archivo);
+        else{
+            archivo<<this->contenido->valor<<endl;
+        }
     }
+
+
 }
 
-void BinomialHeap::print(string mensaje, Root *&secondInicio){
+template <typename T>
+void BinomialHeap<T>::print(string mensaje, Root *&secondInicio){
     cout<<mensaje<<endl;
     string nombreArchivo = name + ".dot";
     ofstream archivo(nombreArchivo);
@@ -151,7 +273,7 @@ void BinomialHeap::print(string mensaje, Root *&secondInicio){
         cout<<"ERROR->El archivo n ose pudo abrir";
         return;
     }
-    archivo<<"digrapth{"<<endl;
+    archivo<<"digraph{"<<endl;
     Root * temp = inicio;
     while(temp){
         temp->print(archivo);
@@ -175,7 +297,7 @@ void BinomialHeap<T>::print(string mensaje){
         cout<<"ERROR->El archivo no se pudo abrir"<<endl;
         return;
     }
-    archivo<<"digrapth{"<<endl;
+    archivo<<"digraph{"<<endl;
     Root * temp = inicio;
     while(temp){
         temp->print(archivo);
@@ -187,42 +309,54 @@ void BinomialHeap<T>::print(string mensaje){
 
 template <typename T>
 void BinomialHeap<T>::_merge(Root *&secondInicio){
-    Root ** firstIter = this->inicio;
-    Root ** secondIter = secondInicio;
+    Root ** firstIter = &(this->inicio);
+    Root ** secondIter = &(secondInicio);
+    int contador = 0;
     while(*secondIter){
         if(*firstIter == nullptr){
-            *firstIter = *secondIter;
-            (*firstIter)->siguiente = nullptr;
-            firstIter = &((*firstIter)->siguiente);
-            secondIter = &((*secondIter)->seguiente);
+            if(*firstIter == inicio){
+                this->inicio = *secondIter;
+            }
+            else{
+                *firstIter = *secondIter;
+            }
+            break;
         }
-        else if(*firstIter->grado() == *secondIter->grado()){
-            auto temp = (*firstIter)->siguiente;
+        else if((*firstIter)->grado() == (*secondIter)->grado()){
+            Root * temp = (*firstIter)->siguiente;
+            Root * temp2 = (*secondIter)->siguiente;
             (*firstIter)->siguiente = *secondIter;
-            (*secondIter)->siguiente = temp;
-            firstIter = &((*firstIter)->siguiente);
-            secondIter = &((*secondIter)->siguiente);
-        }
-        else if(*firstIter->grado() > *secondIter->grado()){
-            auto temp = (*firstIter);
-            *firstIter = *secondIter;
-            (*firstIter)->siguiente = temp->siguiente;
+            (*firstIter)->siguiente->siguiente = temp;
             firstIter = &((*firstIter)->siguiente->siguiente);
-            secondIter = &((*secondIter)->siguiente);
+            secondIter = &(temp2);
+            contador++;
+        }
+        else if((*firstIter)->grado() > (*secondIter)->grado()){
+            auto temp = (*firstIter);
+            auto temp2 = (*secondIter)->siguiente;
+            *firstIter = *secondIter;
+            (*firstIter)->siguiente = temp;
+            firstIter = &((*firstIter)->siguiente->siguiente);
+            secondIter = &(temp2);
+            contador++;
         }
     }
 }
 ///Intentar poner el delete
-void BinomialHeap::_intervambio(Root *menor, Root *mayor){
+template <typename T>
+void BinomialHeap<T>::_herencia(Root *menor, Root *mayor){
     mayor->contenido->hermano = menor->contenido->hijo;
     menor->contenido->hijo = mayor->contenido;
     mayor->contenido->padre = menor->contenido;
 }
 
 template <typename T>
-void BinomialHeap::uni(Root *&secondInicio){
-    if(!secondInicio())return;
+void BinomialHeap<T>::uni(Root *&secondInicio){
+    if(!secondInicio)return;
     _merge(secondInicio);
+    print("merge");
+    secondInicio = nullptr;
+    //secondInicio->destruirme();
     Root * iter = inicio;
     Root * nextIter = inicio->siguiente;
     Root * prevIter = nullptr;
@@ -232,24 +366,28 @@ void BinomialHeap::uni(Root *&secondInicio){
             nextIter = nextIter->siguiente;
             iter = iter->siguiente;
         }
-        if(nextIter->siguiente->grado() == nextIter->grado()){
-            if(!prevIter)prevIter = inicio;
-            nextIter = nextIter->siguiente;
-            iter = iter->siguiente;
-        }
+        else if(nextIter->siguiente and nextIter->siguiente->grado() == nextIter->grado()){
+                if(!prevIter)prevIter = inicio;
+                nextIter = nextIter->siguiente;
+                iter = iter->siguiente;
+            }
         ///ver si se puede hacer el delete
-        if(iter->contenido->valor < nextIter->contenido->valor){
-            _intervambio(iter, nextIter);
+        else if(iter->contenido->valor < nextIter->contenido->valor){
+            _herencia(iter, nextIter);
             if(prevIter) prevIter->siguiente = iter;
             iter->siguiente = nextIter->siguiente;
             nextIter = nextIter->siguiente;
         }
         else{
-            _intervambio(nextIter, iter);
+            _herencia(nextIter, iter);
+            if(iter == inicio){
+                inicio = nextIter;
+            }
             if(prevIter) prevIter->siguiente = nextIter;
             iter = nextIter;
             nextIter = nextIter->siguiente;
         }
+        print("CAmbio");
     }
 }
 
@@ -261,26 +399,36 @@ int BinomialHeap<T>::Nodo::_grado(){
 
 template <typename T>
 int BinomialHeap<T>::Root::grado(){
-    if(this->contenido->hijo)return this->contenido->hijo->_grado() + 1;
+    if(this->contenido){
+        if(this->contenido->hijo)
+        return this->contenido->hijo->_grado() + 1;
+    }
     return 0;
 }
 
 template <typename T>
 void BinomialHeap<T>::Root::destruirme(){
-    if(this->contenido->hijo)this->contenido->hijo->destruirme();
+    if(this->contenido){
+        if(this->contenido->hijo)
+            this->contenido->hijo->destruirme();
+    }
     if(this->siguiente)this->siguiente->destruirme();
     delete this;
 }
 
 template <typename T>
 void BinomialHeap<T>::Nodo::destruirme(){
-    if(this->hermano)this->hermano.destruirme();
-    if(this->hijo)this->hijo.destruirme();
+    if(this->hermano)this->hermano->destruirme();
+    if(this->hijo)this->hijo->destruirme();
     delete this;
 }
 
 template <typename T>
-BinomialHeap<T>::Root * BinomialHeap::getInicio(){return this->inicio;}
+typename BinomialHeap<T>::Root*& BinomialHeap<T>::getInicio(){
+    if(this->inicio)
+    cout<<"FFF->"<<inicio->contenido->valor<<endl;
+    return this->inicio;
+}
 
 template <typename T>
 BinomialHeap<T>::Root::Root(Nodo *contenido){
@@ -332,6 +480,8 @@ BinomialHeap<T>::BinomialHeap(){
 
 template <typename T>
 BinomialHeap<T>::~BinomialHeap(){
-    inicio->destruirme();
+    if(inicio)
+        if(inicio->contenido)
+        inicio->destruirme();
 }
 #endif // BINOMIALHEAP_H

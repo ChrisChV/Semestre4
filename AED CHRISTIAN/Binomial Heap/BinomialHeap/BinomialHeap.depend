@@ -1,0 +1,12 @@
+# depslib dependency file v1.0
+1444292526 source:/home/chris/Documentos/Semestre/Semestre4/AED CHRISTIAN/Binomial Heap/BinomialHeap/main.cpp
+	<iostream>
+	"BinomialHeap.h"
+
+1444292654 /home/chris/Documentos/Semestre/Semestre4/AED CHRISTIAN/Binomial Heap/BinomialHeap/include/BinomialHeap.h
+	"fstream"
+	"iostream"
+	"algorithm"
+
+1444047009 source:/home/chris/Documentos/Semestre/Semestre4/AED CHRISTIAN/Binomial Heap/BinomialHeap/src/BinomialHeap.cpp
+
