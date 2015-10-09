@@ -12,6 +12,9 @@ select Nombre, IdVenta, Cantidad from clientes join Venta where clientes.NClient
 
 select Nombre from Clientes where Nombre not in (select distinct Nombre from Clientes join Venta where Clientes.NCliente = Venta.NCliente);
 
+
+
+
 select IdVenta from Venta where Cantidad > (select Cantidad from Venta where IdVenta like 18);
 
 select IdVenta from Venta where IdVenta not in (select distinct IdVenta from producto join venta join clientes

@@ -27,7 +27,7 @@
 backgroundcolor=\color{lbcolor},
     tabsize=4,    
 %   rulecolor=,
-    language=[GNU]C++,
+    language=SQL,
         basicstyle=\tiny,
         aboveskip={1.5\baselineskip},
         columns=fixed,
@@ -46,4 +46,47 @@ backgroundcolor=\color{lbcolor},
         numberstyle=\color[rgb]{0.205, 0.142, 0.73},
 %        \lstdefinestyle{C++}{language=C++,style=numbers}’.
 }
+\begin{document}
+
+
+\twocolumn[\section{Códigos}]
+\subsection{Código usado para crear las tablas}
+
+\lstinputlisting{sesion3.sql}
+\break
+
+\subsection{Código usado para insertar datos}
+
+\lstinputlisting{sesion3Inserts.sql}
+
+\onecolumn
+
+\twocolumn[\section{Visualización en los diferentes gestores}]
+
+\subsection{SQL Server}
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{1.eps}
+\caption{Estructura en SQL Server}
+\end{figure}
+
+\subsection{PostgreSQL}
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.42]{2.eps}
+\caption{Estructura en PostgreSQL}
+\end{figure}
+
+\break
+
+\subsection{MySQL}
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{3.eps}
+\caption{Estructura en MySQL}
+\end{figure}
+
 \end{document}
