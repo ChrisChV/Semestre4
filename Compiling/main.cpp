@@ -6,8 +6,5 @@ using namespace std;
 
 int main()
 {
-    string hola  = "hola";
-    string dot = hola + ".dot";
-    cout<<dot<<endl;
 
 }

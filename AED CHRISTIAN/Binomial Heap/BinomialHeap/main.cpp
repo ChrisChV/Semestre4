@@ -5,20 +5,23 @@ using namespace std;
 
 int main()
 {
-    BinomialHeap<int> miHeap("Chris_Heap");
-    miHeap.insert(10);
-    miHeap.insert(13);
-    miHeap.insert(20);
-    miHeap.insert(11);
+    BinomialHeap<int> miHeap("Chris_Heap",true);
     miHeap.insert(34);
-    miHeap.insert(5);
-    miHeap.insert(23);
+    miHeap.insert(10);
+    miHeap.insert(4);
+    miHeap.insert(17);
     miHeap.insert(12);
-    miHeap.insert(43);
-    //miHeap.print("adsa");
-    cout<<miHeap.returnMin()<<endl;
-    cout<<miHeap.returnMin()<<endl;
-    cout<<"WWW->"<<miHeap.getInicio()->contenido->valor<<endl;
-    miHeap.deleteMin();
-    miHeap.deleteMin();
+    miHeap.insert(3);
+    miHeap.insert(18);
+    miHeap.insert(65);
+    miHeap.insert(21);
+    miHeap.insert(1);
+    miHeap.insert(15);
+    miHeap.deleteNodo(18);
+    miHeap.deleteNodo(21);
+    miHeap.deleteNodo(10);
+
+
+
+
 }
