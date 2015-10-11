@@ -31,7 +31,7 @@ class RedBlack
     protected:
     private:
         Nodo * root;
-        int find(T, Nodo **&);
+        int find(T, Nodo **&, Nodo *&);
         bool tipoHijo(Nodo *);
 };
 
@@ -51,7 +51,7 @@ void RedBlack<T>::print(){
             string color;
             if((*iter)->color) color = "red";
             else color = "black";
-            archivo<<(*iter)->valor<<" [fillcolor='"<<color<<"']"<<endl;
+            archivo<<(*iter)->valor<<" [color="<<color<<"]"<<endl;
             if((*iter)->hijos[0]){
                 archivo<<(*iter)->valor<<"->"<<(*iter)->hijos[0]->valor<<endl;
                 temp.push_back((*iter)->hijos[0]);
@@ -71,20 +71,24 @@ void RedBlack<T>::print(){
 template <typename T>
 void RedBlack<T>::insert(T valor){
     Nodo ** nodo;
-    auto flag = this->find(valor,nodo);
+    Nodo *padre;
+    auto flag = this->find(valor,nodo,padre);
     if(flag == 1)return;
     *nodo = new Nodo(valor);
+    (*nodo)->padre = padre;
     if(flag == -1){
         root->color = NEGRO;
     }
     Nodo * iter = *nodo;
     while(iter->padre){
         if(iter->padre->color == NEGRO)break;
+        if(iter == root)break;
         if(iter->padre->color == ROJO){
-            if(iter->padre->padre->hijos[iter->padre->valor < iter->padre->padre->valor]->color == NEGRO){
+            if(!iter->padre->padre->hijos[iter->padre->valor < iter->padre->padre->valor] or iter->padre->padre->hijos[iter->padre->valor < iter->padre->padre->valor]->color == NEGRO){
                 if(iter->valor > iter->padre->valor){
                     if(iter->padre->valor > iter->padre->padre->valor) rotacionSImple(iter->padre->padre, DERECHA);
                     else rotacionCompleja(iter->padre->padre, IZQUIERDA);
+                    print();
                 }
                 else{
                     if(iter->padre->valor > iter->padre->padre->valor) rotacionCompleja(iter->padre->padre, DERECHA);
@@ -104,11 +108,14 @@ void RedBlack<T>::insert(T valor){
 }
 
 template <typename T>
-int RedBlack<T>::find(T valor, Nodo **&nodo){
+int RedBlack<T>::find(T valor, Nodo **&nodo, Nodo *&iter){
+    iter = nullptr;
     nodo = &(root);
     if(!root)return -1;
     while(*nodo){
         if((*nodo)->valor == valor)return 1;
+        if(!iter) iter = root;
+        else iter = *nodo;
         nodo = &((*nodo)->hijos[(*nodo)->valor < valor]);
     }
     return 0;
@@ -118,23 +125,48 @@ template <typename T>
 void RedBlack<T>::rotacionCompleja(Nodo *&padre, bool flag){
     Nodo * hijo = padre->hijos[flag];
     Nodo * nieto = hijo->hijos[!flag];
-    padre->hijos[flag] = nieto->hijos[!flag];
-    hijo->hijos[!flag] = nieto->hijos[flag];
-    nieto->hijos[!flag] = padre;
-    nieto->hijos[flag] = hijo;
+    Nodo * abuelo = padre->padre;
     nieto->color = NEGRO;
     padre->color = ROJO;
-    padre = nieto;
+    padre->hijos[flag] = nieto->hijos[!flag];
+    if(nieto->hijos[!flag])
+        nieto->hijos[!flag]->padre = padre;
+    hijo->hijos[!flag] = nieto->hijos[flag];
+    if(nieto->hijos[flag])
+        nieto->hijos[flag]->padre = hijo;
+    nieto->hijos[!flag] = padre;
+    padre->padre = nieto;
+    nieto->hijos[flag] = hijo;
+    hijo->padre = nieto;
+    if(padre == root){
+        root = nieto;
+    }
+    else{
+        abuelo->hijos[abuelo->valor < padre->valor] = nieto;
+        nieto->padre = abuelo;
+    }
 }
 
 template <typename T>
 void RedBlack<T>::rotacionSImple(Nodo *& padre, bool flag){
     Nodo * hijo = padre->hijos[flag];
+    Nodo * abuelo = padre->padre;
     padre->hijos[flag] = hijo->hijos[!flag];
+    if(padre->hijos[flag]){
+        padre->hijos[flag]->padre = padre;
+    }
     hijo->hijos[!flag] = padre;
+    padre->padre = hijo;
     padre->color = ROJO;
     hijo->color = NEGRO;
-    padre = hijo;
+    print();
+    if(padre == root){
+        root = hijo;
+    }
+    else{
+        abuelo->hijos[abuelo->valor < padre->valor] = hijo;
+        hijo->padre = abuelo;
+    }
 }
 
 template <typename T>

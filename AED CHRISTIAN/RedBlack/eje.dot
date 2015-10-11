@@ -1,3 +1,31 @@
 digraph{
-10 [fillcolor=red];
+45 [color=black]
+45->21
+45->51
+21 [color=black]
+21->15
+21->23
+51 [color=black]
+51->50
+51->52
+15 [color=red]
+15->11
+15->20
+23 [color=red]
+23->22
+23->24
+50 [color=black]
+52 [color=black]
+52->53
+11 [color=black]
+11->10
+11->14
+20 [color=black]
+22 [color=black]
+24 [color=black]
+24->25
+53 [color=red]
+10 [color=red]
+14 [color=red]
+25 [color=red]
 }
