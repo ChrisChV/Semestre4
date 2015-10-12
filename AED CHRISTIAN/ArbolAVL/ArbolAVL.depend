@@ -1,11 +1,13 @@
 # depslib dependency file v1.0
 1443587095 source:/home/chris/Documentos/Semestre/Semestre4/AED CHRISTIAN/ArbolAVL/src/AVL.cpp
 
-1443593329 source:/home/chris/Documentos/Semestre/Semestre4/AED CHRISTIAN/ArbolAVL/main.cpp
+1444625503 source:/home/chris/Documentos/Semestre/Semestre4/AED CHRISTIAN/ArbolAVL/main.cpp
 	<iostream>
 	"AVL.h"
 
-1443593535 /home/chris/Documentos/Semestre/Semestre4/AED CHRISTIAN/ArbolAVL/include/AVL.h
+1444625559 /home/chris/Documentos/Semestre/Semestre4/AED CHRISTIAN/ArbolAVL/include/AVL.h
+	"algorithm"
+	"fstream"
 	"iostream"
 	"list"
 

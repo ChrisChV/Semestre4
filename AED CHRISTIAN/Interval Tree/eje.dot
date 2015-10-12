@@ -1,0 +1,19 @@
+digraph{
+17 [label="[17,19]
+max = 40", color = black];
+17->10;
+17->30;
+10 [label="[10,30]
+max = 30", color = red];
+10->5;
+10->15;
+30 [label="[30,40]
+max = 40", color = black];
+5 [label="[5,20]
+max = 30", color = black];
+15 [label="[15,20]
+max = 20", color = black];
+15->12;
+12 [label="[12,15]
+max = 15", color = red];
+}

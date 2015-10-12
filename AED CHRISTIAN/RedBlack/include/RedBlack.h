@@ -6,7 +6,7 @@
 
 using namespace std;
 
-enum Colores{NEGRO, ROJO};
+enum Colores{NEGRO, ROJO, DOBLENEGRO};
 enum Rotaciones{IZQUIERDA, DERECHA};
 template <typename T>
 class RedBlack
@@ -17,7 +17,7 @@ class RedBlack
                 Nodo();
                 Nodo(T);
                 T valor;
-                bool color;
+                int color;
                 Nodo * hijos[2];
                 Nodo * padre;
                 void destruirme();
@@ -25,15 +25,135 @@ class RedBlack
         RedBlack();
         void rotacionSImple(Nodo *&, bool);
         void print();
+        void del(T);
         void insert(T);
         void rotacionCompleja(Nodo *&, bool);
         virtual ~RedBlack();
     protected:
     private:
         Nodo * root;
+        bool _maxIzquierda(Nodo **&);
         int find(T, Nodo **&, Nodo *&);
         bool tipoHijo(Nodo *);
 };
+
+
+template <typename T>
+bool RedBlack<T>::_maxIzquierda(Nodo **& nodo){
+    nodo = &((*nodo)->hijos[0]);
+    int a = 1;
+    while(a){
+        if(!(*nodo)->hijos[1])break;
+        nodo = &((*nodo)->hijos[1]);
+        a++;
+    }
+    if(a == 1){
+        return false;
+    }
+    return true;
+
+}
+
+template <typename T>
+void RedBlack<T>::del(T valor){
+    Nodo ** nodo;
+    Nodo * tt;
+    bool f = false;
+    int val = find(valor, nodo, tt);
+    if(val == 0 or val == -1)return;
+    if((*nodo)->hijos[0] and (*nodo)->hijos[1]){
+        Nodo ** nodoTemp;
+        nodoTemp = nodo;
+        if(!_maxIzquierda(nodoTemp)){
+            f = true;
+        }
+        swap((*nodo)->valor, (*nodoTemp)->valor);
+        nodo = nodoTemp;
+    }
+    cout<<"HHNODO->"<<(*nodo)->valor<<endl;
+    cout<<"HHPADRE->"<<(*nodo)->padre->valor<<endl;
+    if((*nodo)->hijos[0]){
+        cout<<"HHHIJO IZQ->"<<(*nodo)->hijos[0]->valor<<endl;
+        auto temp = *nodo;
+        *nodo = (*nodo)->hijos[0];
+        (*nodo)->padre = temp->padre;
+        (*nodo)->color = NEGRO;
+        ///delete temp;
+    }
+    else if((*nodo)->hijos[1]){
+        auto temp = *nodo;
+        *nodo = (*nodo)->hijos[1];
+        (*nodo)->padre = temp->padre;
+        (*nodo)->color = NEGRO;
+        ///delete temp;
+    }
+    else{
+        if((*nodo)->color == ROJO){
+            (*nodo)->padre->hijos[(*nodo)->padre->valor < (*nodo)->valor] = nullptr;
+            ///delete *nodo;
+        }
+        else{
+            Nodo *temp = (*nodo);
+            bool flagg;
+            bool flag = (*nodo)->padre->valor > (*nodo)->valor;
+            if(f) flag = !flag;
+            flagg = flag;
+            while(true){
+                cout<<"NODO->"<<(*nodo)->valor<<endl;
+                cout<<"PADRE->"<<(*nodo)->padre->valor<<endl;
+                if((*nodo) == root){
+                    root->color = NEGRO;
+                    break;
+                }
+                flag = (*nodo)->padre->valor > (*nodo)->valor;
+                if(f) flag = !flag;
+                Nodo * padre = (*nodo)->padre;
+                if(padre->hijos[flag]->color == NEGRO){
+                    if(!padre->hijos[flag]->hijos[flag] or padre->hijos[flag]->hijos[flag]->color == NEGRO){
+                        if(!padre->hijos[flag]->hijos[!flag] or padre->hijos[flag]->hijos[!flag]->color == NEGRO){
+                            padre->hijos[flag]->color = ROJO;
+                            if(padre->color == NEGRO){
+                                padre->color = NEGRO;
+                                nodo = &(padre);
+                            }
+                            else{
+                                padre->color = NEGRO;
+                                break;
+                            }
+                        }
+                        else{
+                            padre->color = NEGRO;
+                            padre->hijos[flag]->color = NEGRO;
+                            padre->hijos[flag]->hijos[!flag]->color = NEGRO;
+                            rotacionSImple(padre, flag);
+                            padre->color = ROJO;
+                            break;
+                        }
+                    }
+                    else{
+                        padre->hijos[flag]->color = NEGRO;
+                        padre->hijos[flag]->hijos[flag]->color = NEGRO;
+                        rotacionSImple(padre, flag);
+                        padre->color = NEGRO;
+                        //print();
+                        break;
+                    }
+                }
+                else{
+                    rotacionSImple(padre,flag);
+                    break;
+                }
+            }
+            cout<<"GGGGGGGGGG->"<<temp->valor<<endl;
+            cout<<"GGGGGGGGGG22->"<<temp->padre->valor<<endl;
+            if(temp->padre->hijos[!flagg]){
+                cout<<"dddddddddddddddd->"<<temp->padre->hijos[!flagg]->valor<<endl;;
+            }
+            temp->padre->hijos[!flagg] = nullptr;
+            ///delete temp;
+        }
+    }
+}
 
 template <typename T>
 void RedBlack<T>::print(){
@@ -88,7 +208,6 @@ void RedBlack<T>::insert(T valor){
                 if(iter->valor > iter->padre->valor){
                     if(iter->padre->valor > iter->padre->padre->valor) rotacionSImple(iter->padre->padre, DERECHA);
                     else rotacionCompleja(iter->padre->padre, IZQUIERDA);
-                    print();
                 }
                 else{
                     if(iter->padre->valor > iter->padre->padre->valor) rotacionCompleja(iter->padre->padre, DERECHA);
@@ -139,6 +258,7 @@ void RedBlack<T>::rotacionCompleja(Nodo *&padre, bool flag){
     nieto->hijos[flag] = hijo;
     hijo->padre = nieto;
     if(padre == root){
+        nieto->padre = nullptr;
         root = nieto;
     }
     else{
@@ -159,8 +279,8 @@ void RedBlack<T>::rotacionSImple(Nodo *& padre, bool flag){
     padre->padre = hijo;
     padre->color = ROJO;
     hijo->color = NEGRO;
-    print();
     if(padre == root){
+        hijo->padre = nullptr;
         root = hijo;
     }
     else{

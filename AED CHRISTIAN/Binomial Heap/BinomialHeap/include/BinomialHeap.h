@@ -80,8 +80,12 @@ T BinomialHeap<T>::returnMin(){
 
 template <typename T>
 void BinomialHeap<T>::deleteNodo(T valor){
+    if(animation)cout<<"ELIMINANDO EL VALOR -> "<<valor<<endl;
     Nodo ** nodo;
-    if(!this->find(valor,nodo))return;
+    if(!this->find(valor,nodo)){
+        if(animation)cout<<"NO SE ENCONTRO EL VALOR -> "<<valor<<endl;
+        return;
+    }
     (*nodo)->valor = MENOSINFINITO;
     if(animation){
         print("Head" + name + " despues de reemplazar menosinfinito");
@@ -95,6 +99,7 @@ void BinomialHeap<T>::deleteNodo(T valor){
 
 template <typename T>
 void BinomialHeap<T>::deleteMin(){
+    if(animation)cout<<"ELIMINANDO EL MENOR"<<endl;
     BinomialHeap secondHeap("seconTemp");
     Root **root;
     if(!searchMin(root))return;
@@ -224,6 +229,7 @@ void BinomialHeap<T>::deleteTree(T valor){
 
 template <typename T>
 void BinomialHeap<T>::insert(T valor){
+    if(animation)cout<<"INSERTANDO EL VALOR -> "<<valor<<endl;
     Root *nuevo = new Root(new Nodo(valor));
     uni(nuevo);
 }
@@ -275,16 +281,7 @@ void BinomialHeap<T>::print(string mensaje, Root *&secondInicio){
     archivo.close();
     string comando = "dot -Tpdf " + nombreArchivo + " -o " + name + ".pdf";
     const char *c;
-    /*
-    for(int i = 0; i < comando.size(); i++){
-        c[i] = comando[i];
-    }
-    for(int i = 1; i < 5; i++){
-        c[comando.size() + i] = '\0';
-    }
-    */
     c = comando.c_str();
-    cout<<c<<endl;
     system(c);
 }
 
@@ -307,16 +304,7 @@ void BinomialHeap<T>::print(string mensaje){
     archivo.close();
     string comando = "dot -Tpdf " + nombreArchivo + " -o " + name + ".pdf";
     const char *c;
-    /*
-    for(int i = 0; i < comando.size(); i++){
-        c[i] = comando[i];
-    }
-    for(int i = 1; i < 5; i++){
-        c[comando.size() + i] = '\0';
-    }
-    */
     c = comando.c_str();
-    cout<<c<<endl;
     system(c);
 }
 
@@ -340,7 +328,7 @@ void BinomialHeap<T>::_merge(Root *&secondInicio){
             auto temp2 = (*secondIter)->siguiente;
             *firstIter = *secondIter;
             (*firstIter)->siguiente = temp;
-            firstIter = &((*firstIter)->siguiente->siguiente);
+            firstIter = &((*firstIter)->siguiente);
             secondIter = &(temp2);
         }
         else if((*firstIter)->siguiente == nullptr){
@@ -419,7 +407,7 @@ void BinomialHeap<T>::uni(Root *&secondInicio){
             nextIter = nextIter->siguiente;
         }
         if(animation){
-            print("Heap " + name + " despues de un cambio");
+            print("Heap " + name + " despues de una comparacion");
             char tt;
             cin>>tt;
         }

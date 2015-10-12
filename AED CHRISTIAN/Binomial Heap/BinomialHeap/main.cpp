@@ -18,8 +18,8 @@ int main()
     miHeap.insert(1);
     miHeap.insert(15);
     miHeap.deleteNodo(18);
-    miHeap.deleteNodo(21);
-    miHeap.deleteNodo(10);
+    miHeap.deleteMin();
+
 
 
 

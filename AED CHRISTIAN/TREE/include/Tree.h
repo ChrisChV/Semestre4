@@ -2,6 +2,8 @@
 #define TREE_H
 #include "iostream"
 #include "list"
+#include "algorithm"
+#include "fstream"
 
 using namespace std;
 
@@ -30,7 +32,9 @@ class Tree
         bool find(T, Nodo **&);
         bool findR(T);
         bool insert(T dato);
+        void del(T valor);
         virtual ~Tree();
+        void printDot();
     protected:
     private:
         void _printPreorden(Nodo *);
@@ -41,8 +45,67 @@ class Tree
         int _numeroNodos(Nodo *);
         int _altura(Nodo *,int);
         void _printN(list<Nodo*> lista);
+        void _menorIzq(Nodo **&);
         Nodo * root;
 };
+
+template <typename T>
+void Tree<T>::printDot(){
+    ofstream archivo("eje.dot");
+    if(archivo.fail()){
+        cout<<"EL archivo no se pudo abrir"<<endl;
+        return;
+    }
+    archivo<<"digraph{";
+    list<Nodo *> result;
+    if(root) result.push_back(root);
+    for(auto iter = result.begin(); iter != result.end(); ++iter){
+        archivo<<(*iter)->dato<<endl;
+        if((*iter)->hijos[0]){
+            archivo<<(*iter)->dato<<"->"<<(*iter)->hijos[0]->dato<<endl;
+            result.push_back((*iter)->hijos[0]);
+        }
+        if((*iter)->hijos[1]){
+            archivo<<(*iter)->dato<<"->"<<(*iter)->hijos[1]->dato<<endl;
+            result.push_back((*iter)->hijos[1]);
+        }
+    }
+    archivo<<"}";
+    archivo.close();
+    system("dot -Tpdf eje.dot -o eje.pdf");
+
+}
+
+template <typename T>
+void Tree<T>::_menorIzq(Nodo ** &nodo){
+    nodo = &((*nodo)->hijos[0]);
+    while(true){
+        if(!(*nodo)->hijos[1])return;
+        nodo = &((*nodo)->hijos[1]);
+    }
+}
+
+template <typename T>
+void Tree<T>::del(T valor){
+    Nodo ** nodo;
+    if(!this->find(valor,nodo))return;
+    if((*nodo)->hijos[0] and (*nodo)->hijos[1]){
+        Nodo ** temp = nodo;
+        _menorIzq(temp);
+        swap((*temp)->dato, (*nodo)->dato);
+
+        nodo = temp;
+    }
+    if((*nodo)->hijos[0]){
+        *nodo = (*nodo)->hijos[0];
+    }
+    if((*nodo)->hijos[1]){
+        *nodo = (*nodo)->hijos[1];
+    }
+    else{
+        *nodo = nullptr;
+    }
+}
 
 template <typename T>
 void Tree<T>::printN(){
