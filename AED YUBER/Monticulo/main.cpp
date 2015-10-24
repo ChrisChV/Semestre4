@@ -6,13 +6,23 @@ using namespace std;
 
 float convertirNumero(string numero){
     double resultado = 0;
+    bool flag = true;
     auto iter = numero.end();
     iter--;
     double contador = 0;
     for(iter; iter!= numero.begin(); iter--){
+        if(!((*iter) >= 48 and (*iter) <= 57) and  (*iter)  != '.'){
+            return 0;
+        }
         if((*iter) == '.'){
-            resultado /= pow(10,contador);
-            contador = -1;
+            if(flag){
+                resultado /= pow(10,contador);
+                contador = -1;
+                flag = false;
+            }
+            else{
+                return 0;
+            }
         }
         else{
             resultado += pow(10,contador) * ((*iter) - 48);
@@ -71,6 +81,9 @@ float verificarLinea(string linea){
 
 int main()
 {
+    auto a = convertirNumero("10.5.1");
+    cout<<a<<endl;
+    /*
     Monticulo impresion;
     ifstream archivo("hojas.txt");
     if(archivo.fail()){
@@ -94,7 +107,7 @@ int main()
     auto tam = impresion.size();
     for(int i = 0; i < tam; i++){
         cout<<"Impresion numero "<<i+1<<" :"<<impresion.del()<<" hojas"<<endl;
-    }
+    }*/
 }
 
 
