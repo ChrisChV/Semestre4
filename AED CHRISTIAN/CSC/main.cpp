@@ -8,5 +8,4 @@ int main()
     Automata<char> at("automata1");
     auto temp = at.construccionSubconjuntos();
     temp.metadata();
-    temp.print();
 }

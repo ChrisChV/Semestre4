@@ -30,7 +30,6 @@ class Automata{
                 bool marcado;
                 void uni(Conjunto *);
                 bool pertenece(T valor);
-                bool findValores(list<Conjunto *>, Conjunto *&);
                 void print();
         };
         Automata(list<Caracter>, list<Conjunto *>,list<tuple<Conjunto *, Caracter, Conjunto *>>);
@@ -42,7 +41,6 @@ class Automata{
         Conjunto * findConjunto(Name);
         Conjunto * findConjuntoVal(T);
         Automata construccionSubconjuntos();
-        void generate();
         bool findListValores(Conjunto *);
         bool pertenece(Conjunto *);
         void print();
@@ -56,22 +54,7 @@ class Automata{
 };
 
 template <typename T>
-void Automata<T>::generate(){
-    string f = file + ".txt";
-    ofstream archivo(f);
-    if(archivo.fail()){
-        cout<<"No se pudo abrir el archivo"<<endl;
-        return;
-    }
-    for(auto iter = elementos.begin(); iter != elementos.end(); ++iter){
-
-    }
-
-}
-
-template <typename T>
 void Automata<T>::Conjunto::print(){
-    cout<<"NAME CONJUNTO->"<<name<<endl;
     for(auto iter = valores.begin(); iter != valores.end(); ++iter){
         cout<<*iter<<" ";
     }
@@ -87,20 +70,8 @@ bool Automata<T>::findListValores(Conjunto *conjunto){
 }
 
 template <typename T>
-bool Automata<T>::Conjunto::findValores(list<Conjunto *> estados, Conjunto *& result){
-    for(auto iter = estados.begin(); iter != estados.end(); ++iter){
-        result = *iter;
-        if(result->valores == this->valores)return true;
-    }
-    return false;
-}
-
-template <typename T>
 Automata<T> Automata<T>::construccionSubconjuntos(){
     Conjunto * inicial = e_Clausura(elementos.front());
-    char n = 65;
-    inicial->name = n;
-    n++;
     inicial->print();
     inicial->marcado = false;
     list<Conjunto *> estados;
@@ -109,32 +80,20 @@ Automata<T> Automata<T>::construccionSubconjuntos(){
     estados.push_back(inicial);
     for(auto iter = estados.begin(); iter != estados.end(); ++iter){
         (*iter)->marcado = true;
-        cout<<"ITER"<<endl;
-        (*iter)->print();
         for(auto iter2 = alfabeto.begin(); iter2 != alfabeto.end(); ++iter2){
             Conjunto * temporal = e_Clausura(relacion(*iter,*iter2));
-            temporal->name = n;
-            cout<<"TEMPORAL"<<endl;
             temporal->print();
-            Conjunto * temp;
-            if(!temporal->findValores(estados,temp)){
-                rel.push_back(make_tuple(*iter,*iter2,temporal));
-                cout<<"INGRESO1->"<<endl;
+            rel.push_back(make_tuple(*iter,*iter2,temporal));
+            if(!findListValores(temporal)){
                 if(temporal->valores.size() > 0){
-                    cout<<"INGRESO2->"<<endl;
                     estados.push_back(temporal);
                 }
                 temporal->marcado = false;
-                n++;
-            }
-            else{
-                rel.push_back(make_tuple(*iter,*iter2,temp));
             }
         }
     }
     Automata result(this->alfabeto,estados,rel);
     for(auto iter = estadosFinales.begin(); iter != estadosFinales.end(); ++iter){
-        cout<<"DDDDDDDDDDD->"<<(*iter)->valores.front();
         auto temp = result.findConjuntoVal((*iter)->valores.front());
         if(temp){
             estadosF.push_back(temp);
@@ -184,26 +143,17 @@ void Automata<T>::metadata(){
 
 template <typename T>
 void Automata<T>::print(){
+
+
+
+
+
     string f = file + ".dot";
     ofstream archivo(f);
     if(archivo.fail()){
         cout<<"EL archivo no se pudo abrir"<<endl;
     }
-    archivo<<"digraph{"<<endl;
-    for(auto iter = elementos.begin(); iter != elementos.end(); ++iter){
-        archivo<<(*iter)->name<<endl;
-    }
-    for(auto iter = relaciones.begin(); iter != relaciones.end(); ++iter){
-        archivo<<get<0>(*iter)->name<<"->"<<get<2>(*iter)->name<<" [label =\""<<get<1>(*iter)<<"\"];"<<endl;
-    }
-    for(auto iter = estadosFinales.begin(); iter != estadosFinales.end(); ++iter){
-        archivo<<(*iter)->name<<" [color=\"red\"]"<<endl;
-    }
-    archivo<<"}";
     archivo.close();
-    string comando = "dot -Tpdf " + f + " -o " + file + ".pdf";
-    const char* c = comando.c_str();
-    system(c);
 }
 
 
@@ -221,38 +171,25 @@ typename Automata<T>::Conjunto * Automata<T>::clausura(Conjunto * conjunto, Cara
     Conjunto * resultado = new Conjunto();
     for(auto iter2 = conjunto->valores.begin(); iter2 != conjunto->valores.end(); ++iter2){
         Conjunto * temp = findRealcion(*iter2, etiqueta);
-        temp->name = 'T';
-        ///cout<<"CLAUSURA T->"<<endl;
-        ///temp->print();
         for(auto iter = temp->valores.begin(); iter != temp->valores.end(); ++iter){
             Conjunto * temptemp = findRealcion(*iter, etiqueta);
-            temptemp->name = 'P';
-            ///temptemp->print();
             if(temptemp->valores.size() > 0){
                 temp->uni(temptemp);
             }
-
         }
         if(temp->valores.size() > 0){
             resultado->uni(temp);
         }
     }
-    ///cout<<"bbbbbbbbbb"<<endl;
-    ///resultado->print();
+
     resultado->filtreRepeat();
-    ///cout<<"aaaaaaaaaaaa"<<endl;
-    ///resultado->print();
     resultado->valores.sort();
     return resultado;
 }
 
 template <typename T>
 typename Automata<T>::Conjunto * Automata<T>::e_Clausura(Conjunto * conjunto){
-    auto result = clausura(conjunto,'e');
-    result->uni(conjunto);
-    result->valores.sort();
-    return result;
-
+    return clausura(conjunto,'e');
 }
 
 template <typename T>
@@ -288,14 +225,15 @@ void Automata<T>::Conjunto::filtreRepeat(){
     list<T> temporal;
     for(auto iter = valores.begin(); iter != valores.end(); ++iter){
         bool flag = true;
-        for(auto iter2 = temporal.begin(); iter2 != temporal.end(); ++iter2){
+        auto iter2 = temporal.begin();
+        for(iter2; iter2 != temporal.end(); ++iter2){
             if(*iter2 == *iter){
                 flag = false;
                 break;
             }
         }
         if(flag){
-            temporal.push_back(*iter);
+            temporal.push_back(*iter2);
         }
     }
     this->valores = temporal;
@@ -393,7 +331,6 @@ Automata<T>::Automata(const char * file){
     for(auto iter = elementos.begin(); iter != elementos.end(); ++iter){
         (*iter)->valores.sort();
     }
-
 }
 
 template <typename T>
