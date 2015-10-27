@@ -1,23 +1,21 @@
 #include <iostream>
 #include "IntervalTree.h"
+#include "stdlib.h"
+#include "time.h"
 
 using namespace std;
 
 int main()
 {
+    srand(time(NULL));
     IntervalTree<int> arbolito;
-    arbolito.insert(5,20);
-    arbolito.insert(17,19);
-    arbolito.insert(30,40);
-    arbolito.insert(10,30);
-    arbolito.insert(15,20);
-    arbolito.insert(12,15);
+    int low = 0;
+    int high = 0;
+    for(int i = 0; i < 1000; i++){
+        low = rand() % 10000;
+        high = low + (rand() % 1000);
+        arbolito.insert(low,high);
+    }
     arbolito.print();
-    auto node = arbolito.find(6,7);
-    if(node){
-        cout<<"RESULT->["<<node->low<<","<<node->high<<"]"<<endl;
-    }
-    else{
-        cout<<"NO EXISTE"<<endl;
-    }
+
 }

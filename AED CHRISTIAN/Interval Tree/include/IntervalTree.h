@@ -27,33 +27,40 @@ class IntervalTree
         };
         IntervalTree();
         void insert(T,T);
-        Nodo * find(T,T);
+        list<Nodo *> find(T,T);
         void print();
         virtual ~IntervalTree();
     protected:
     private:
         Nodo * root;
         int _find(T, Nodo **&, Nodo *&);
+        bool __find(T, Nodo **&, Nodo *&);
         void rotacionSimple(Nodo *&, bool);
         void rotacionCompleja(Nodo *&, bool);
         void verificarMax(Nodo *);
-        Nodo * find(T,T,Nodo*);
+        void find(T,T,Nodo*, list<Nodo *>&);
 
 };
 
 template <typename T>
-typename IntervalTree<T>::Nodo * IntervalTree<T>::find(T low, T high){
-    return find(low,high,root);
+list< typename IntervalTree<T>::Nodo *> IntervalTree<T>::find(T low, T high){
+    list<Nodo *> result;
+    find(low,high,root,result);
+    return result;
 }
 
 template <typename T>
-typename IntervalTree<T>::Nodo * IntervalTree<T>::find(T low, T high, Nodo *nodo){
-    if(!nodo)return nullptr;
-    if(low >= nodo->low and high <= nodo->high) return nodo;
-    if(nodo->hijos[0] and nodo->hijos[0]->max > nodo->low){
-        return find(low,high,nodo->hijos[0]);
+void IntervalTree<T>::find(T low, T high, Nodo *nodo, list<Nodo *> &result){
+    if(!nodo)return;
+    if(low >= nodo->low and high <= nodo->high){
+        result.push_back(nodo);
+        find(low,high,nodo->hijos[0],result);
+        find(low,high,nodo->hijos[1],result);
     }
-    return find(low,high,nodo->hijos[1]);
+    else if(nodo->hijos[0] and nodo->hijos[0]->max > nodo->low){
+        find(low,high,nodo->hijos[0],result);
+    }
+    else find(low,high,nodo->hijos[1],result);
 }
 
 template <typename T>
@@ -72,14 +79,14 @@ void IntervalTree<T>::print(){
             string color;
             if((*iter)->color) color = "red";
             else color = "black";
-            archivo<<(*iter)->low<<" [label=\"["<<(*iter)->low<<","<<(*iter)->high<<"]"<<endl<<"max = "<<(*iter)->max<<"\", color = "<<color<<"];"<<endl;
+            archivo<<(*iter)->low * (*iter)->high + 1<<" [label=\"["<<(*iter)->low<<","<<(*iter)->high<<"]"<<endl<<"max = "<<(*iter)->max<<"\", color = "<<color<<"];"<<endl;
             if((*iter)->hijos[0]){
                 temp.push_back((*iter)->hijos[0]);
-                archivo<<(*iter)->low<<"->"<<(*iter)->hijos[0]->low<<";"<<endl;
+                archivo<<(*iter)->low * (*iter)->high + 1<<"->"<<(*iter)->hijos[0]->low * (*iter)->hijos[0]->high +1<<";"<<endl;
             }
             if((*iter)->hijos[1]){
                 temp.push_back((*iter)->hijos[1]);
-                archivo<<(*iter)->low<<"->"<<(*iter)->hijos[1]->low<<";"<<endl;
+                archivo<<(*iter)->low * (*iter)->high + 1<<"->"<<(*iter)->hijos[1]->low * (*iter)->hijos[1]->high +1<<";"<<endl;
             }
         }
         result = temp;
@@ -94,7 +101,17 @@ void IntervalTree<T>::insert(T low, T high){
     Nodo ** nodo;
     Nodo * padre;
     int flag = this->_find(low, nodo, padre);
-    if(flag == 1)return;
+    if(flag == 1){
+        return;
+        /*
+        if((*nodo)->high == high){
+            return;
+        }
+        Nodo ** nodo;
+        Nodo * padre;
+        __find(low,nodo,padre);
+        */
+    }
     *nodo = new Nodo(low, high);
     (*nodo)->padre = padre;
     if(flag == -1) root->color = NEGRO;
@@ -102,6 +119,7 @@ void IntervalTree<T>::insert(T low, T high){
     Nodo *iter = *nodo;
     while(iter->padre){
         if(iter->padre->color == NEGRO)break;
+        if(iter == root)break;
         if(iter->padre->color == ROJO){
             if(!iter->padre->padre->hijos[iter->padre->low < iter->padre->padre->low] or iter->padre->padre->hijos[iter->padre->low < iter->padre->padre->low]->color == NEGRO){
                 if(iter->low > iter->padre->low){
@@ -159,19 +177,21 @@ void IntervalTree<T>::rotacionCompleja(Nodo *& padre, bool flag){
     nieto->color = NEGRO;
     padre->color = ROJO;
     padre->hijos[flag] = nieto->hijos[!flag];
-    if(padre->hijos[flag]) padre->hijos[flag]->padre = padre;
+    if(nieto->hijos[!flag])
+        nieto->hijos[!flag]->padre = padre;
     hijo->hijos[!flag] = nieto->hijos[flag];
-    if(hijo->hijos[!flag]) hijo->hijos[!flag]->padre = hijo;
+    if(nieto->hijos[flag])
+        nieto->hijos[flag]->padre = hijo;
     nieto->hijos[!flag] = padre;
+    padre->padre = nieto;
     nieto->hijos[flag] = hijo;
     hijo->padre = nieto;
-    padre->padre = nieto;
     if(padre == root){
         nieto->padre = nullptr;
         root = nieto;
     }
     else{
-        abuelo->hijos[abuelo->low < padre->low] = nieto;
+        if(abuelo) abuelo->hijos[abuelo->low < padre->low] = nieto;
         nieto->padre = abuelo;
     }
     if(padre->hijos[flag]){
@@ -195,20 +215,20 @@ template <typename T>
 void IntervalTree<T>::rotacionSimple(Nodo *&padre, bool flag){
     Nodo * hijo = padre->hijos[flag];
     Nodo * abuelo = padre->padre;
-    padre->color = ROJO;
-    hijo->color = NEGRO;
     padre->hijos[flag] = hijo->hijos[!flag];
     if(padre->hijos[flag]){
         padre->hijos[flag]->padre = padre;
     }
     hijo->hijos[!flag] = padre;
     padre->padre = hijo;
+    padre->color = ROJO;
+    hijo->color = NEGRO;
     if(padre == root){
         hijo->padre = nullptr;
         root = hijo;
     }
     else{
-        abuelo->hijos[abuelo->low < padre->low] = hijo;
+        if(abuelo) abuelo->hijos[abuelo->low < padre->low] = hijo;
         hijo->padre = abuelo;
     }
     verificarMax(padre);
@@ -226,6 +246,19 @@ int IntervalTree<T>::_find(T valor, Nodo **& nodo, Nodo *& padre){
         nodo = &((*nodo)->hijos[(*nodo)->low < valor]);
     }
     return 0;
+}
+
+template <typename T>
+bool IntervalTree<T>::__find(T valor, Nodo **& nodo, Nodo *& padre){
+    nodo = &(root);
+    padre = nullptr;
+    if(!root)return false;
+    while(*nodo){
+        if(!padre) padre = root;
+        else padre = *nodo;
+        nodo = &((*nodo)->hijos[(*nodo)->low < valor]);
+    }
+    return true;
 }
 
 template <typename T>

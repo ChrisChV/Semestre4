@@ -262,7 +262,7 @@ void RedBlack<T>::rotacionCompleja(Nodo *&padre, bool flag){
         root = nieto;
     }
     else{
-        abuelo->hijos[abuelo->valor < padre->valor] = nieto;
+        if(abuelo) abuelo->hijos[abuelo->valor < padre->valor] = nieto;
         nieto->padre = abuelo;
     }
 }
@@ -284,7 +284,7 @@ void RedBlack<T>::rotacionSImple(Nodo *& padre, bool flag){
         root = hijo;
     }
     else{
-        abuelo->hijos[abuelo->valor < padre->valor] = hijo;
+        if(abuelo) abuelo->hijos[abuelo->valor < padre->valor] = hijo;
         hijo->padre = abuelo;
     }
 }

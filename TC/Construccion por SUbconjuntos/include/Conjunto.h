@@ -36,7 +36,7 @@ class Automata{
         list<Caracter> alfabeto;
         list<Conjunto *> elementos;
         list<Conjunto *> estadosFinales;
-        list<<Conjunto *, Caracter, Conjunto *>> relaciones;
+        list<tuple<Conjunto *, Caracter, Conjunto *>> relaciones;
 };
 
 Automata::Conjunto * Automata::findConjunto(Name name){
@@ -141,7 +141,7 @@ Automata::Automata(const char * file){
             archivo.get(caracter);
         }
         else if(caracter == ';'){
-            ///crear tupla y agregarla;
+            relaciones.push_back(make_tuple(firstC,etiqueta,secondC));
             firstC = nullptr;
             secondC = nullptr;
             etiqueta = '$'
@@ -167,7 +167,7 @@ Automata::Automata(const char * file){
         else{
             archivo.get(caracter);
         }
-
+    archivo.close();
     }
 }
 

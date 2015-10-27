@@ -230,6 +230,8 @@ void BinomialHeap<T>::deleteTree(T valor){
 template <typename T>
 void BinomialHeap<T>::insert(T valor){
     if(animation)cout<<"INSERTANDO EL VALOR -> "<<valor<<endl;
+    Nodo ** nodo;
+    if(this->find(valor,nodo))return;
     Root *nuevo = new Root(new Nodo(valor));
     uni(nuevo);
 }

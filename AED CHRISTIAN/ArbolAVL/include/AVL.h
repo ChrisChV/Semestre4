@@ -25,6 +25,7 @@ class AVL
         AVL();
         void printNiveles();
         void print();
+        void print2();
         void add(T valor);
         void del(T valor);
         void RotacionSimple(Nodo *&, bool);
@@ -35,8 +36,18 @@ class AVL
         bool _add(T valor, Nodo *&);
         bool _delete(T valor, Nodo *&);
         void _mayorIzquierd(Nodo *&, Nodo **&);
+        int alturasub(Nodo *);
         Nodo * root;
 };
+
+template <typename T>
+int AVL<T>::alturasub(Nodo * nodo){
+    if(!nodo)return 1;
+    int izquierda = alturasub(nodo->hijos[0]) + 1;
+    int derecha = alturasub(nodo->hijos[1]) + 1;
+    if(izquierda > derecha) return izquierda;
+    return derecha;
+}
 
 template <typename T>
 void AVL<T>::del(T valor){
@@ -121,6 +132,33 @@ void AVL<T>::print(){
     archivo<<"}"<<endl;
     archivo.close();
     system("dot -Tpdf eje.dot -o eje.pdf");
+    cout<<"HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"<<endl;
+}
+
+template <typename T>
+void AVL<T>::print2(){
+    ofstream archivo("eje2.dot");
+    if(archivo.fail()){
+        cout<<"No se pudo abrir el archivo"<<endl;
+        return;
+    }
+    archivo<<"digraph{"<<endl;
+    list<Nodo *> result;
+    if(root) result.push_back(root);
+    for(auto iter = result.begin(); iter != result.end(); ++iter){
+        archivo<<(*iter)->valor<< " [label=\""<<(*iter)->valor<<endl<<"FE="<<(*iter)->FE<<"\"];"<<endl;
+        if((*iter)->hijos[0]){
+            archivo<<(*iter)->valor<<"->"<<(*iter)->hijos[0]->valor<<endl;
+            result.push_back((*iter)->hijos[0]);
+        }
+        if((*iter)->hijos[1]){
+            archivo<<(*iter)->valor<<"->"<<(*iter)->hijos[1]->valor<<endl;
+            result.push_back((*iter)->hijos[1]);
+        }
+    }
+    archivo<<"}"<<endl;
+    archivo.close();
+    system("dot -Tpdf eje2.dot -o eje2.pdf");
 }
 
 template <typename T>
@@ -153,31 +191,26 @@ bool AVL<T>::_add(T valor, Nodo *& nodo){
     }
     if(nodo->valor == valor)return false;
     if(!_add(valor, nodo->hijos[nodo->valor < valor]))return false;
-    if(nodo->valor < valor)nodo->FE += 1;
-    else nodo->FE -= 1;
+    nodo->FE = alturasub(nodo->hijos[1]) - alturasub(nodo->hijos[0]);
     //nodo->FE += nodo->valor<valor?:-1;
     switch(nodo->FE){
         case 0:return false;
         case 2:
             if(nodo->hijos[1]->FE == 1){
                 RotacionSimple(nodo,1);
-                return false;
             }
             else{
                 RotacionCompleja(nodo,1);
-                return false;
             }
-            break;
+            return false;
         case -2:
             if(nodo->hijos[0]->FE == -1){
                 RotacionSimple(nodo,0);
-                return false;
             }
             else{
                 RotacionCompleja(nodo, 0);
-                return false;
             }
-            break;
+            return false;
     }
     return true;
 }
@@ -189,28 +222,33 @@ void AVL<T>::RotacionCompleja(Nodo *& one, bool flag){
     two->hijos[!flag] = three->hijos[flag];
     three->hijos[!flag] = one;
     three->hijos[flag] = two;
-    if(flag){
+    one->FE = alturasub(one->hijos[1]) - alturasub(one->hijos[0]);
+    two->FE = alturasub(two->hijos[1]) - alturasub(two->hijos[0]);
+    /*if(flag){
         switch(three->FE){
             case 0:one->FE = 0;two->FE = 0; break;
-            case -1:one->FE = 1;two->FE = 0; break;
-            case 1:one->FE = 0; two->FE = -1; break;
+            case -1:one->FE = 0;two->FE = 1; break;
+            case 1:one->FE = -1; two->FE = 0; break;
         }
     }
     else{
         switch(three->FE){
             case 0:one->FE = 0;two->FE = 0; break;
-            case -1:one->FE = 0;two->FE = 1; break;
-            case 1: one->FE = -1; two->FE = 0; break;
+            case -1:one->FE = 1;two->FE = 0; break;
+            case 1: one->FE = 0; two->FE = -1; break;
         }
     }
+    */
     one = three;
+
 }
 
 
 template <typename T>
 void AVL<T>::RotacionSimple(Nodo *& one, bool flag){
     Nodo * two = one->hijos[flag];
-        two->FE -= 1;
+    /*
+    two->FE -= 1;
     if(!two->hijos[!flag] and !one->hijos[!flag])
         two->FE = 0;
     if(two->hijos[!flag]){
@@ -220,11 +258,18 @@ void AVL<T>::RotacionSimple(Nodo *& one, bool flag){
         else if(flag)one->FE = 1;
         else one->FE = -1;
     }
-    else{
-        one->FE = 0;
+    else if(one->hijos[!flag]{
+        one->FE = 1;
     }
+    else{
+    */
+
     one->hijos[flag] = two->hijos[!flag];
     two->hijos[!flag] = one;
+    one->FE = alturasub(one->hijos[1]) - alturasub(one->hijos[0]);
+    two->FE = alturasub(two->hijos[1]) - alturasub(two->hijos[0]);
+    //one->FE = 0;
+    //two->FE = 0;
     one = two;
 }
 

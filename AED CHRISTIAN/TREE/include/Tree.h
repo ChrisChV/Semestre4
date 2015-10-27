@@ -73,7 +73,6 @@ void Tree<T>::printDot(){
     archivo<<"}";
     archivo.close();
     system("dot -Tpdf eje.dot -o eje.pdf");
-
 }
 
 template <typename T>
@@ -93,13 +92,12 @@ void Tree<T>::del(T valor){
         Nodo ** temp = nodo;
         _menorIzq(temp);
         swap((*temp)->dato, (*nodo)->dato);
-
         nodo = temp;
     }
     if((*nodo)->hijos[0]){
         *nodo = (*nodo)->hijos[0];
     }
-    if((*nodo)->hijos[1]){
+    else if((*nodo)->hijos[1]){
         *nodo = (*nodo)->hijos[1];
     }
     else{

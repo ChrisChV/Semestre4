@@ -15,7 +15,9 @@ int main()
     arbolito.insert(20);
     arbolito.insert(16);
     arbolito.insert(18);
+    arbolito.printDot();
     arbolito.del(18);
     arbolito.del(14);
-    arbolito.printDot();
+    arbolito.del(20);
+
 }

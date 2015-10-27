@@ -1,0 +1,20 @@
+# depslib dependency file v1.0
+1445864504 source:/home/chris/Documentos/Semestre/Semestre4/TC/Construccion por SUbconjuntos/main.cpp
+	<iostream>
+	"Automata.h"
+
+1445864547 /home/chris/Documentos/Semestre/Semestre4/TC/Construccion por SUbconjuntos/include/Automata.h
+	"list"
+	"tuple"
+	"iostream"
+	"fstream"
+
+1445862349 source:/home/chris/Documentos/Semestre/Semestre4/TC/Construccion por SUbconjuntos/src/Automata.cpp
+
+1445909107 source:/home/chris/Documentos/Semestre/Semestre4/TC/Construccion por SUbconjuntos/include/Automata.h
+	"list"
+	"tuple"
+	"iostream"
+	"fstream"
+	"algorithm"
+
