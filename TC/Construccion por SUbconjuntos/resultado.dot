@@ -1,18 +1,17 @@
 digraph{
+A [color = "green"];
 A
 B
 C
 D
-E
-A->B [label ="a"];
-A->C [label ="b"];
-B->B [label ="a"];
-B->D [label ="b"];
-C->B [label ="a"];
-C->C [label ="b"];
-D->B [label ="a"];
-D->E [label ="b"];
-E->B [label ="a"];
-E->C [label ="b"];
-E [color="red"]
+A->B [label ="0"];
+A->B [label ="1"];
+B->C [label ="0"];
+B->B [label ="1"];
+C->D [label ="0"];
+C->B [label ="1"];
+D->C [label ="0"];
+D->E [label ="1"];
+A [color="red"]
+B [color="red"]
 }

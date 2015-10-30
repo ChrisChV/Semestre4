@@ -1,4 +1,68 @@
-#ifndef AUTOMATA_H
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{color}
+\usepackage{parskip}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{listings}
+\usepackage{vmargin}
+\graphicspath{ {imagenes/} }
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{lbcolor}{rgb}{0.9,0.9,0.9}
+\usepackage{epstopdf}
+
+
+\setpapersize{A4}
+\setmargins{2.5cm}       % margen izquierdo
+{1.5cm}                        % margen superior
+{16.5cm}                      % anchura del texto
+{23.42cm}                    % altura del texto
+{10pt}                           % altura de los encabezados
+{1cm}                           % espacio entre el texto y los encabezados
+{0pt}                             % altura del pie de página
+{2cm}     
+
+\lstset{
+backgroundcolor=\color{lbcolor},
+    tabsize=4,    
+%   rulecolor=,
+    language=[GNU]C++,
+        basicstyle=\tiny,
+        aboveskip={1.5\baselineskip},
+        columns=fixed,
+        showstringspaces=false,
+        extendedchars=false,
+        breaklines=true,
+        prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+        frame=single,
+        showtabs=false,
+        showspaces=false,
+        showstringspaces=false,
+        identifierstyle=\ttfamily,
+        keywordstyle=\color[rgb]{0,0,1},
+        commentstyle=\color[rgb]{0.026,0.112,0.095},
+        stringstyle=\color{red},
+        numberstyle=\color[rgb]{0.205, 0.142, 0.73},
+%        \lstdefinestyle{C++}{language=C++,style=numbers}’.
+}
+
+\begin{document}
+
+\section{Problema}
+Implementar el algoritmo Construcción de Subconjuntos para convertir un Autómata Finito No Determinista (AFND) a
+un Autómata Finito Determinista (AFD).
+\section{Archivo de Entrada}
+Un ejemplo de un archivo de entrada para mi progrma es el siguiente:
+\begin{lstlisting}
+ 
+\end{lstlisting}
+
+
+\section{Código}
+\subsection{Automata.h}
+\begin{lstlisting}
+ #ifndef AUTOMATA_H
 #define AUTOMATA_H
 #include "list"
 #include "tuple"
@@ -43,7 +107,6 @@ class Automata{
         Automata construccionSubconjuntos();
         void generate();
         void print();
-        void metadata();
     private:
         list<Caracter> alfabeto;
         list<Conjunto *> elementos;
@@ -156,34 +219,6 @@ typename Automata<T>::Conjunto * Automata<T>::findConjuntoVal(T valor){
 }
 
 template <typename T>
-void Automata<T>::metadata(){
-    cout<<"alfabeto:"<<endl;
-    for(auto iter = alfabeto.begin(); iter != alfabeto.end(); ++iter){
-        cout<<*iter<<endl;
-    }
-    cout<<"elementos"<<endl;
-    for(auto iter = elementos.begin(); iter != elementos.end();++iter){
-        cout<<"Conjunto->"<<(*iter)->name<<endl;
-        for(auto iter2 = (*iter)->valores.begin(); iter2 !=(*iter)->valores.end();++iter2){
-            cout<<(*iter2)<<",";
-        }
-        cout<<endl;
-    }
-    cout<<"estados finales"<<endl;
-    for(auto iter = estadosFinales.begin(); iter != estadosFinales.end(); ++iter){
-        cout<<"Conjunto->"<<(*iter)->name<<endl;
-        for(auto iter2 = (*iter)->valores.begin(); iter2 !=(*iter)->valores.end();++iter2){
-            cout<<(*iter2)<<",";
-        }
-        cout<<endl;
-    }
-    cout<<"relaciones"<<endl;
-    for(auto iter = relaciones.begin(); iter != relaciones.end(); ++iter){
-        cout<<get<0>(*iter)->name<<" "<<get<1>(*iter)<<" "<<get<2>(*iter)->name<<endl;
-    }
-}
-
-template <typename T>
 void Automata<T>::print(){
     string f = file + ".dot";
     ofstream archivo(f);
@@ -191,10 +226,6 @@ void Automata<T>::print(){
         cout<<"EL archivo no se pudo abrir"<<endl;
     }
     archivo<<"digraph{"<<endl;
-    auto inicial = elementos.front();
-    if(inicial){
-        archivo<<inicial->name<<" [color = \"green\"];"<<endl;
-    }
     for(auto iter = elementos.begin(); iter != elementos.end(); ++iter){
         archivo<<(*iter)->name<<endl;
     }
@@ -348,14 +379,12 @@ Automata<T>::Automata(const char * file){
     }
     archivo.get(caracter);
     archivo.get(caracter);
-    archivo.get(caracter);
-    archivo.get(caracter);
     bool first = false;
     bool second = false;
     Conjunto * firstC = nullptr;
     Conjunto * secondC = nullptr;
     Caracter etiqueta = '$';
-    while(caracter != '}'){
+    while(caracter != '.'){
         if(caracter == 32 or caracter == '\n'){
             archivo.get(caracter);
         }
@@ -446,3 +475,30 @@ Automata<T>::Conjunto::~Conjunto(){
 }
 
 #endif // AUTOMATA_H
+\end{lstlisting}
+
+\subsection{}
+
+\begin{lstlisting}
+ #include <iostream>
+#include "Automata.h"
+
+using namespace std;
+
+int main()
+{
+    Automata<char> at("automata1");
+    at.print();
+    auto temp = at.construccionSubconjuntos();
+    temp.generate();
+}
+\end{lstlisting}
+
+\section{Parte Gráfca}
+
+Para poder graficar nuestro Autómata, he usado un software llamado Grapviz, que, bajo una determinada sintaxis, podemos generar
+un archivo pdf después de correr una linea de comando.
+
+
+
+\end{document}

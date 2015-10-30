@@ -1,9 +1,12 @@
 # depslib dependency file v1.0
 1445894541 source:/home/chris/Documentos/Semestre/Semestre4/AED YUBER/ExamenPractico/src/Grafo.cpp
 
-1445895685 source:/home/chris/Documentos/Semestre/Semestre4/AED YUBER/ExamenPractico/main.cpp
+1446179764 source:/home/chris/Documentos/Semestre/Semestre4/AED YUBER/ExamenPractico/main.cpp
 	<iostream>
-	"Grafo.h"
+	"list"
+	"map"
+	"algorithm"
+	"vector"
 
 1445895643 /home/chris/Documentos/Semestre/Semestre4/AED YUBER/ExamenPractico/include/Grafo.h
 	"vector"

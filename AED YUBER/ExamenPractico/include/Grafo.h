@@ -1,6 +1,7 @@
 #ifndef GRAFO_H
 #define GRAFO_H
 #include "vector"
+#include "map"
 
 using namespace std;
 
