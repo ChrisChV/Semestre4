@@ -27,7 +27,6 @@ class AVL
         void print();
         void print2();
         void add(T valor);
-        void del(T valor);
         void RotacionSimple(Nodo *&, bool);
         void RotacionCompleja(Nodo *&, bool);
         virtual ~AVL();
@@ -37,6 +36,7 @@ class AVL
         bool _delete(T valor, Nodo *&);
         void _mayorIzquierd(Nodo *&, Nodo **&);
         int alturasub(Nodo *);
+        void del(T valor);
         Nodo * root;
 };
 

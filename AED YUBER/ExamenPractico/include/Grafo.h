@@ -5,38 +5,38 @@
 
 using namespace std;
 
-class Grafo
+class GrafoDirigido
 {
     public:
-        Grafo();
-        Grafo(vector<vector<int>>);
+        GrafoDirigido();
+        GrafoDirigido(vector<vector<int>>);
         int size();
         vector<int> operator [] (int);
-        virtual ~Grafo();
+        virtual ~GrafoDirigido();
     protected:
     private:
         vector<vector<int>> matriz;
         int siz;
 };
 
-int Grafo::size(){
+int GrafoDirigido::size(){
     return this->siz;
 }
 
-vector<int> Grafo::operator[] (int index){
+vector<int> GrafoDirigido::operator[] (int index){
     return matriz[index];
 }
 
-Grafo::Grafo(vector<vector<int>> m){
+GrafoDirigido::Grafo(vector<vector<int>> m){
     matriz = m;
     siz = matriz.size();
 }
 
-Grafo::Grafo(){
+GrafoDirigido::Grafo(){
 
 }
 
-Grafo::~Grafo(){
+GrafoDirigido::~GrafoDirigido(){
 
 }
 

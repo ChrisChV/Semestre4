@@ -10,9 +10,9 @@ int main()
     srand(time(NULL));
     BinomialHeap<int> miHeap("Chris_Heap");
     int number = 0;
-    for(int i = 0; i < 10000; i++){
+    for(int i = 0; i < 1000; i++){
         number = rand() % 10000;
-        miHeap.insert(number);
+        miHeap.insert(i);
     }
     miHeap.print("mensaje");
 

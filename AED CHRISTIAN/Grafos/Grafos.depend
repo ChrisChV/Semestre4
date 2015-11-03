@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1446319162 source:/home/chris/Documentos/Semestre/Semestre4/AED CHRISTIAN/Grafos/main.cpp
+	<iostream>
+	"map"
+	"vector"
+	"algorithm"
+	"fstream"
+
