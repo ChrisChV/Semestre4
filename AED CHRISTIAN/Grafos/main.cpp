@@ -3,25 +3,17 @@
 #include "vector"
 #include "algorithm"
 #include "fstream"
+#include "Grafo.h"
 
+/*
 #define INFINITO 10000;
 
-using namespace std;
-
-typedef map<int,map<int,float>> Grafo;
-
-int find(vector<int> valores, int a){
-    for(int i = 0; i < valores.size(); i++){
         if(valores[i] == a)return i;
     }
     return -1;
-}
+using namespace std;
 
-bool esGrafo(Grafo grafo, vector<int> &valores){
-    int siz = grafo.size();
-    for(auto iter = grafo.begin(); iter != grafo.end(); ++iter){
-        if(iter->second.size() > siz) return false;
-        valores.push_back(iter->first);
+typedef map<int,map<int,float>> Grafo;
     }
     for(auto iter = grafo.begin(); iter != grafo.end(); ++iter){
         for(auto iter2 = iter->second.begin(); iter2 != iter->second.end(); ++iter2){
@@ -39,11 +31,11 @@ void printG(Grafo grafo){
         cout<<"El archivo no se pudo abrir"<<endl;
         return;
     }
-    archivo<<"digraph{"<<endl;
+    archivo<<"graph{"<<endl;
     for(auto iter = grafo.begin(); iter != grafo.end(); ++iter){
         archivo<<iter->first<<endl;
         for(auto iter2 = iter->second.begin(); iter2 != iter->second.end(); ++iter2){
-            archivo<<iter->first<<"->"<<iter2->first<<" [label=\""<<iter2->second<<"\"];"<<endl;
+            archivo<<iter->first<<" -- "<<iter2->first<<" [label=\""<<iter2->second<<"\"];"<<endl;
         }
     }
     archivo<<"}";
@@ -135,25 +127,26 @@ map<int,int> dijkstra(Grafo &grafo, int i){
     }
     return distancias;
 }
+*/
+
 
 int main()
 {
     Grafo g;
-    g[0][1] = 1;
-    g[1][2] = 2;
-    g[2][1] = 3;
-    g[3][1] = 5;
-    g[4][1] = 3;
-    g[2][4] = 1;
-    g[1][4] = 5;
-    g[5][4] = 1;
-    g[1][5] = 1;
-    g[0][6] = 5;
-    g[6];
-    g[1][6] = 1;
-    map<int,int> v = dijkstra(g,0);
-    for(auto iter = v.begin(); iter != v.end(); ++iter){
-        cout<<iter->first<<" = "<<iter->second<<endl;
-    }
-    printG(g);
+    g["0"];
+    g["1"];
+    g["2"];
+    g["3"];
+    g["4"];
+    g("0","1",2);
+    g("0","4",100);
+    g("1","4",7);
+    g("1","2",5);
+    g("2","0",18);
+    g("2","3",1);
+    g("2","4",9);
+    g("3","4",1);
+    g.dijkstra("0");
+    g.print();
+
 }
