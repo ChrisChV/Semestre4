@@ -6,6 +6,9 @@
 #include "fstream"
 #include "iostream"
 #include "FibonacciHeap.h"
+#include "stack"
+#include "queue"
+
 
 #define INFINITO 1000;
 
@@ -13,7 +16,7 @@ using namespace std;
 
 ////////////PROBAR = STRING
 
-class Grafo
+class MyGrafo
 {
     public:
         class Relacion{
@@ -39,6 +42,9 @@ class Grafo
                 PesoDTO(float p, Nodo * nodo1, Nodo * nodo2){nodos[0] = nodo1; nodos[1] = nodo2; peso = p;}
                 float peso;
                 Nodo * nodos[2];
+                Nodo * _getDestino(Nodo * nodo1){
+                    return nodos[nodo1->nombre == nodos[0]->nombre];
+                }
                 bool operator<(PesoDTO second){
                     if(peso < second.peso) return true;
                     return false;
@@ -52,14 +58,21 @@ class Grafo
                     return false;
                 }
         };
-        Grafo();
+        MyGrafo();
         void print();
         void warshall();
-        list<float> dijkstra(string i);
+        bool kruskall(MyGrafo&);
+        bool prim(MyGrafo &);
+        bool hayCamino(string,string);
+        void DSF(void(*funcion)(Nodo *));
+        void BSF(void(*funcion)(Nodo *));
+        int relSize();
+        int size();
+        map<string,float> dijkstra(string i);
         void floid();
         list<Relacion *>& operator[](string);
         bool operator()(string,string,float);
-        virtual ~Grafo();
+        virtual ~MyGrafo();
     protected:
     private:
         bool _existeRelacion(Nodo *, Nodo *);
@@ -69,74 +82,213 @@ class Grafo
         void _desmarcar();
         float _getPeso(Nodo * nodo1, Nodo * nodo2);
         float _getPeso(Nodo * nodo1, Nodo * nodo2,Relacion *&);
-        bool _llenarHeap(FibonacciHeap<PesoDTO> &, string);
-        PesoDTO _getMin(FibonacciHeap<PesoDTO>);
-        list<float> _generarLista(FibonacciHeap<PesoDTO>&);
+        bool _hayCamino(string a, Nodo * b, list<string>&);
+        bool _llenarHeap_dijkstra(FibonacciHeap<PesoDTO> &,list<PesoDTO*>&, string);
+        void _llenarHeap_kruskall(FibonacciHeap<PesoDTO> &);
+        void _llenarHeap_prim(FibonacciHeap<PesoDTO> &,Nodo *);
+        map<string,float> _generarLista(list<PesoDTO*>&);
         map<string, Nodo *> grafo;
         list<Relacion *> relaciones;
 
 };
 
-Grafo::PesoDTO Grafo::_getMin(FibonacciHeap<PesoDTO> heap){
-    while(!heap.empty()){
-        PesoDTO pdto = heap.popMin();
-        if(!pdto.nodos[1]->marcado)return pdto;
+void MyGrafo::BSF(void(*funcion)(Nodo *)){
+    _desmarcar();
+    queue<Nodo *> fila;
+    auto iter = grafo.begin();
+    fila.push(iter->second);
+    iter->second->marcado = true;
+    while(!fila.empty()){
+        Nodo * temp = fila.front();
+        fila.pop();
+        for(auto rel : temp->relaciones){
+            Nodo * nodo;
+            _existeNodo(rel->_getDestino(temp->nombre),nodo);
+            if(!nodo->marcado){
+                fila.push(nodo);
+                nodo->marcado = true;
+            }
+        }
+        funcion(temp);
     }
-    return PesoDTO();
 }
 
+void MyGrafo::DSF(void(*funcion)(Nodo *)){
+    _desmarcar();
+    stack<Nodo *> cola;
+    auto iter = grafo.begin();
+    cola.push(iter->second);
+    iter->second->marcado = true;
+    while(!cola.empty()){
+        Nodo * temp = cola.top();
+        cola.pop();
+        auto iter = temp->relaciones.end();
+        iter--;
+        for(iter; iter != temp->relaciones.begin(); --iter){
+            Nodo * nodo;
+            _existeNodo((*iter)->_getDestino(temp->nombre),nodo);
+            if(!nodo->marcado) {
+                cola.push(nodo);
+                nodo->marcado = true;
+            }
+        }
+        Nodo * nodo;
+        _existeNodo((*iter)->_getDestino(temp->nombre),nodo);
+        if(!nodo->marcado) {
+            cola.push(nodo);
+            nodo->marcado = true;
+        }
+        funcion(temp);
+    }
+}
 
-bool Grafo::_llenarHeap(FibonacciHeap<PesoDTO> &heap, string i){
-    Nodo * nodo;
-    if(!_existeNodo(i,nodo))return false;
-    for(auto iter = grafo.begin(); iter!= grafo.end(); ++iter){
-        PesoDTO nuevo(_getPeso(nodo,iter->second),nodo,iter->second);
-        cout<<"AAAA->"<<nuevo.peso<<endl;
-        heap.insert(nuevo);
+void MyGrafo::_llenarHeap_prim(FibonacciHeap<PesoDTO> &heap, Nodo * nodo){
+    for(auto rel : nodo->relaciones){
+        Nodo * nodo1;
+        Nodo * nodo2;
+        _existeNodo(rel->nodos[0],nodo1);
+        _existeNodo(rel->nodos[1],nodo2);
+        if(!nodo1->marcado and !nodo2->marcado)
+            heap.insert(PesoDTO(rel->peso,nodo1,nodo2));
+    }
+}
+
+bool MyGrafo::prim(MyGrafo& resultado){
+    FibonacciHeap<PesoDTO> heap;
+    _desmarcar();
+    auto iter = grafo.begin();
+    _llenarHeap_prim(heap,iter->second);
+    iter->second->marcado = true;
+    Nodo * actual = iter->second;
+    while(resultado.relSize() != grafo.size() - 1){
+        if(heap.empty())return false;
+        PesoDTO menor = heap.popMin();
+        if(!menor.nodos[0]->marcado or !menor.nodos[1]->marcado){
+            resultado[menor.nodos[0]->nombre];
+            resultado[menor.nodos[1]->nombre];
+            resultado(menor.nodos[0]->nombre,menor.nodos[1]->nombre,menor.peso);
+            actual = menor._getDestino(actual);
+            cout<<"ACTUAL->"<<actual->nombre<<endl;
+            _llenarHeap_prim(heap,actual);
+            actual->marcado = true;
+        }
     }
     return true;
 }
 
-void Grafo::_desmarcar(){
+int MyGrafo::relSize(){
+    return relaciones.size();
+}
+
+bool MyGrafo::_hayCamino(string a, Nodo * b, list<string> &visitados){
+    if(find(visitados.begin(),visitados.end(),a) != visitados.end())return false;
+    visitados.push_back(a);
+    Nodo * nodo1;
+    _existeNodo(a,nodo1);
+    if(_existeRelacion(nodo1,b))return true;
+    for(auto rel : nodo1->relaciones){
+        if(_hayCamino(rel->_getDestino(a),b,visitados))return true;
+    }
+    return false;
+}
+
+bool MyGrafo::hayCamino(string a,string b){
+    list<string> visitados;
+    Nodo * nodo1;
+    Nodo * nodo2;
+    if(!_existeNodo(a,nodo1) or !_existeNodo(b,nodo2))return false;
+    return _hayCamino(a,nodo2,visitados);
+}
+
+void MyGrafo::_llenarHeap_kruskall(FibonacciHeap<PesoDTO>& heap){
+    for(auto rel : relaciones){
+        Nodo * nodo1;
+        Nodo * nodo2;
+        _existeNodo(rel->nodos[0],nodo1);
+        _existeNodo(rel->nodos[1],nodo2);
+        nodo1->marcado = false;
+        nodo2->marcado = false;
+        cout<<"PPPPPPP->"<<rel->peso<<endl;
+        PesoDTO nuevo(rel->peso,nodo1,nodo2);
+        heap.insert(nuevo);
+        cout<<"MIN->"<<heap.getMin().peso<<endl;
+    }
+}
+
+bool MyGrafo::kruskall(MyGrafo &resultado){
+    FibonacciHeap<PesoDTO> heap;
+    _llenarHeap_kruskall(heap);
+    int nodosSinVisitar = grafo.size();
+    bool first = true;
+    while(resultado.relSize() != grafo.size() - 1){
+        if(heap.empty())return false;
+        PesoDTO menor = heap.popMin();
+        cout<<"PESO->"<<menor.peso<<endl;
+        if( menor.nodos[0] != menor.nodos[1] and ((!menor.nodos[0]->marcado or !menor.nodos[1]->marcado) or !resultado.hayCamino(menor.nodos[0]->nombre,menor.nodos[1]->nombre))){
+            cout<<"WWWWW->"<<menor.peso<<endl;
+            menor.nodos[0]->marcado = true;
+            menor.nodos[1]->marcado = true;
+            resultado[menor.nodos[0]->nombre];
+            resultado[menor.nodos[1]->nombre];
+            resultado(menor.nodos[0]->nombre,menor.nodos[1]->nombre,menor.peso);
+        }
+    }
+    return true;
+}
+
+bool MyGrafo::_llenarHeap_dijkstra(FibonacciHeap<PesoDTO> &heap,list<PesoDTO*> &distancias, string i){
+    Nodo * nodo;
+    if(!_existeNodo(i,nodo))return false;
+    for(auto iter = grafo.begin(); iter!= grafo.end(); ++iter){
+        iter->second->marcado = false;
+        if(iter->first != i){
+            heap.insert(PesoDTO(_getPeso(nodo,iter->second),nodo,iter->second));
+            distancias.push_back(&(heap.back()));
+        }
+        else{
+            distancias.push_back(new PesoDTO(_getPeso(nodo,iter->second),nodo,iter->second));
+        }
+    }
+    return true;
+}
+
+void MyGrafo::_desmarcar(){
     for(auto iter = grafo.begin(); iter != grafo.end(); ++iter){
         iter->second->marcado = false;
     }
 }
 
-list<float> Grafo::_generarLista(FibonacciHeap<PesoDTO> &pesos){
-    list<float> resultado;
-    for(auto iter = pesos.getRoots().begin(); iter != pesos.getRoots().end(); ++iter){
-        resultado.push_back((*iter)->valor.peso);
+map<string,float> MyGrafo::_generarLista(list<PesoDTO*> &pesos){
+    map<string,float> resultado;
+    for(auto iter = pesos.begin(); iter != pesos.end(); ++iter){
+        resultado[(*iter)->nodos[1]->nombre] = (*iter)->peso;
     }
     return resultado;
 }
 
-list<float> Grafo::dijkstra(string i){
+map<string,float> MyGrafo::dijkstra(string i){
     FibonacciHeap<PesoDTO> heap;
-    if(!_llenarHeap(heap,i)) return list<float>();
+    list<PesoDTO*> distancias;
+    if(!_llenarHeap_dijkstra(heap,distancias,i)) return map<string,float>();
     grafo[i]->marcado = true;
     int contadorDeCeros = grafo.size() - 1;
-    cout<<"A"<<endl;
     while(contadorDeCeros > 0){
-        PesoDTO pdto =  _getMin(heap);
+        PesoDTO pdto =  heap.popMin();
         int p = pdto.peso;
+        PesoDTO pdto2 = PesoDTO();
         pdto.nodos[1]->marcado = true;
         contadorDeCeros--;
-        for(auto iter = heap.getRoots().begin(); iter != heap.getRoots().end(); ++iter){
-            cout<<"B"<<endl;
-            cout<<heap.size()<<endl;
-            cout<<(*iter)->valor.peso<<endl;
-            if(!(*iter)->valor.nodos[1]->marcado){
+        for(auto iter = distancias.begin(); iter != distancias.end(); ++iter){
+            if(!(*iter)->nodos[1]->marcado){
                 cout<<"C"<<endl;
-                (*iter)->valor.peso = min((*iter)->valor.peso, p + _getPeso(pdto.nodos[1],(*iter)->valor.nodos[1]));
+                (*iter)->peso = min((*iter)->peso, p + _getPeso(pdto.nodos[1],(*iter)->nodos[1]));
             }
         }
     }
-    _desmarcar();
-    return _generarLista(heap);
+    return _generarLista(distancias);
 }
 
-float Grafo::_getPeso(Nodo * nodo1, Nodo * nodo2,Relacion *&r){
+float MyGrafo::_getPeso(Nodo * nodo1, Nodo * nodo2,Relacion *&r){
     if(!nodo1 or !nodo2)return INFINITO;
     if(_existeRelacion(nodo1,nodo2,r)){
         return r->peso;
@@ -147,14 +299,14 @@ float Grafo::_getPeso(Nodo * nodo1, Nodo * nodo2,Relacion *&r){
     return INFINITO;
 }
 
-float Grafo::_getPeso(Nodo * nodo1, Nodo * nodo2){
+float MyGrafo::_getPeso(Nodo * nodo1, Nodo * nodo2){
     Relacion * r;
     return _getPeso(nodo1,nodo2,r);
 }
 
 
 
-void Grafo::floid(){
+void MyGrafo::floid(){
     for(auto i = grafo.begin(); i != grafo.end(); ++i){
         for(auto j = grafo.begin(); j != grafo.end(); ++j){
             for(auto k = grafo.begin(); k != grafo.end(); ++k){
@@ -168,7 +320,7 @@ void Grafo::floid(){
     }
 }
 
-bool Grafo::_existeRelacion(Nodo * nodo1, Nodo * nodo2){
+bool MyGrafo::_existeRelacion(Nodo * nodo1, Nodo * nodo2){
     Relacion *rel;
     if(nodo1->_existeRelacion(nodo2,rel))return true;
     if(nodo2->_existeRelacion(nodo1,rel))return true;
@@ -176,14 +328,14 @@ bool Grafo::_existeRelacion(Nodo * nodo1, Nodo * nodo2){
     return false;
 }
 
-bool Grafo::_existeRelacion(Nodo * nodo1, Nodo * nodo2, Relacion *& rel){
+bool MyGrafo::_existeRelacion(Nodo * nodo1, Nodo * nodo2, Relacion *& rel){
     if(nodo1->_existeRelacion(nodo2,rel))return true;
     if(nodo2->_existeRelacion(nodo1,rel))return true;
     rel = nullptr;
     return false;
 }
 
-void Grafo::warshall(){
+void MyGrafo::warshall(){
     for(auto i = grafo.begin(); i != grafo.end(); ++i){
         for(auto j = grafo.begin(); j != grafo.end(); ++j){
             for(auto k = grafo.begin(); k != grafo.end(); ++k){
@@ -195,7 +347,7 @@ void Grafo::warshall(){
     }
 }
 
-void Grafo::print(){
+void MyGrafo::print(){
     ofstream archivo("grafo.dot");
     if(archivo.fail()){
         cout<<"El archivo no se pudo abrir"<<endl;
@@ -213,7 +365,7 @@ void Grafo::print(){
     system("dot -Tpdf grafo.dot -o grafo.pdf");
 }
 
-bool Grafo::_crearRelacion(string nodo1, string nodo2, float peso){
+bool MyGrafo::_crearRelacion(string nodo1, string nodo2, float peso){
     Nodo * n1;
     Nodo * n2;
     if(!_existeNodo(nodo1,n1) or !_existeNodo(nodo2,n2)){
@@ -240,16 +392,16 @@ bool Grafo::_crearRelacion(string nodo1, string nodo2, float peso){
     }
 }
 
-bool Grafo::operator()(string nodo1, string nodo2, float peso){
+bool MyGrafo::operator()(string nodo1, string nodo2, float peso){
     return _crearRelacion(nodo1, nodo2, peso);
 }
 
-string Grafo::Relacion::_getDestino(string name){
+string MyGrafo::Relacion::_getDestino(string name){
     ///////////PROBAR ACA
     return nodos[nodos[0] == name];
 }
 
-list<Grafo::Relacion *>& Grafo::operator[](string name){
+list<MyGrafo::Relacion *>& MyGrafo::operator[](string name){
     Nodo * nodo;
     if(!_existeNodo(name,nodo)){
         nodo = new Nodo(name);
@@ -258,7 +410,7 @@ list<Grafo::Relacion *>& Grafo::operator[](string name){
     return grafo[name]->relaciones;
 }
 
-bool Grafo::Nodo::_existeRelacion(Nodo * nodo, Relacion *&rel){
+bool MyGrafo::Nodo::_existeRelacion(Nodo * nodo, Relacion *&rel){
     for(auto iter_rel : relaciones){
         rel = iter_rel;
         if(rel->_getDestino(nombre) == nodo->nombre)return true;
@@ -267,7 +419,7 @@ bool Grafo::Nodo::_existeRelacion(Nodo * nodo, Relacion *&rel){
     return false;
 }
 
-bool Grafo::_existeNodo(string name, Nodo *&nodo){
+bool MyGrafo::_existeNodo(string name, Nodo *&nodo){
    auto iter = grafo.find(name);
    if(iter != grafo.end()){
        nodo = iter->second;
@@ -276,34 +428,34 @@ bool Grafo::_existeNodo(string name, Nodo *&nodo){
    return false;
 }
 
-Grafo::Nodo::Nodo(){
+MyGrafo::Nodo::Nodo(){
     nombre = nullptr;
     marcado = true;
 }
 
-Grafo::Nodo::Nodo(string name){
+MyGrafo::Nodo::Nodo(string name){
     nombre = name;
     marcado = false;
 }
 
-Grafo::Relacion::Relacion(string nodo1, string nodo2, float peso){
+MyGrafo::Relacion::Relacion(string nodo1, string nodo2, float peso){
     nodos[0] = nodo1;
     nodos[1] = nodo2;
     this->peso = peso;
 }
 
-Grafo::Relacion::Relacion(){
+MyGrafo::Relacion::Relacion(){
     nodos[0] = nullptr;
     nodos[1] = nullptr;
     peso = INFINITO;
 }
 
 
-Grafo::Grafo(){
+MyGrafo::MyGrafo(){
 
 }
 
-Grafo::~Grafo(){
+MyGrafo::~MyGrafo(){
     for(auto iter =grafo.begin(); iter != grafo.end(); ++iter){
         delete(iter->second);
     }

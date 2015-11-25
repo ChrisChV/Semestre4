@@ -198,7 +198,10 @@ bool AVL<T>::_add(T valor, Nodo *& nodo){
         case 2:
             if(nodo->hijos[1]->FE == 1){
                 RotacionSimple(nodo,1);
+           else{
+                RotacionCompleja(nodo, 0);
             }
+            return false;        }
             else{
                 RotacionCompleja(nodo,1);
             }
@@ -207,10 +210,7 @@ bool AVL<T>::_add(T valor, Nodo *& nodo){
             if(nodo->hijos[0]->FE == -1){
                 RotacionSimple(nodo,0);
             }
-            else{
-                RotacionCompleja(nodo, 0);
-            }
-            return false;
+
     }
     return true;
 }
@@ -245,6 +245,7 @@ void AVL<T>::RotacionCompleja(Nodo *& one, bool flag){
 
 
 template <typename T>
+
 void AVL<T>::RotacionSimple(Nodo *& one, bool flag){
     Nodo * two = one->hijos[flag];
     /*

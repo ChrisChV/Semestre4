@@ -7,8 +7,6 @@
 
 enum Colores{SINCOLOR, NEGRO};
 
-using namespace std;
-
 template <typename T>
 class FibonacciHeap
 {
@@ -17,13 +15,13 @@ class FibonacciHeap
             public:
                 Nodo();
                 Nodo(T);
-                list<Nodo*> hijos;
+                std::list<Nodo*> hijos;
                 T valor;
                 Nodo * padre;
                 bool color;
                 void destruirme();
-                void print(ofstream &archivo);
-                typename list<Nodo *>::iterator _find(Nodo *);
+                void print(std::ofstream &archivo);
+                typename std::list<Nodo *>::iterator _find(Nodo *);
                 bool find(T,Nodo*&);
         };
         FibonacciHeap();
@@ -37,14 +35,14 @@ class FibonacciHeap
         T& back();
         void consolidate();
         bool find(T,Nodo*&);
-        list<Nodo *>& getRoots(){return roots;};
+        std::list<Nodo *>& getRoots(){return roots;};
         virtual ~FibonacciHeap();
     protected:
     private:
-        list<Nodo *> roots;
+        std::list<Nodo *> roots;
         Nodo * menor;
-        typename list<Nodo *>::iterator _find(Nodo *menor);
-        void verificarlLista(map<int,Nodo*>&,Nodo*&);
+        typename std::list<Nodo *>::iterator _find(Nodo *menor);
+        void verificarlLista(std::map<int,Nodo*>&,Nodo*&);
         void verificarColor(Nodo*);
         int _size;
 };
@@ -99,6 +97,7 @@ template <typename T>
 bool FibonacciHeap<T>::Nodo::find(T valor,Nodo *& nodo){
     if(this->valor == valor)return true;
     for(auto iter = hijos.begin(); iter != hijos.end(); ++iter){
+
         if((*iter)->valor == valor){
             nodo = (*iter);
             return true;
@@ -117,7 +116,7 @@ bool FibonacciHeap<T>::find(T valor, Nodo *&nodo){
 }
 
 template <typename T>
-typename list<typename FibonacciHeap<T>::Nodo *>::iterator FibonacciHeap<T>::Nodo::_find(Nodo *nodo){
+typename std::list<typename FibonacciHeap<T>::Nodo *>::iterator FibonacciHeap<T>::Nodo::_find(Nodo *nodo){
     for(auto iter = hijos.begin(); iter != hijos.end(); ++iter){
         if(*iter == nodo)return iter;
     }
@@ -125,7 +124,7 @@ typename list<typename FibonacciHeap<T>::Nodo *>::iterator FibonacciHeap<T>::Nod
 }
 
 template <typename T>
-typename list<typename FibonacciHeap<T>::Nodo *>::iterator FibonacciHeap<T>::_find(Nodo * menor){
+typename std::list<typename FibonacciHeap<T>::Nodo *>::iterator FibonacciHeap<T>::_find(Nodo * menor){
     for(auto iter = roots.begin(); iter != roots.end(); ++iter){
         if(*iter == menor)return iter;
     }
@@ -136,7 +135,7 @@ template <typename T>
 T FibonacciHeap<T>::popMin(){
     try{
         if(_size == 0){
-            string e = "pop min con lista Vacia";
+            std::string e = "pop min con lista Vacia";
             throw(e);
         }
         T resultado = menor->valor;
@@ -144,36 +143,44 @@ T FibonacciHeap<T>::popMin(){
             (*iter)->padre = nullptr;
             roots.push_back(*iter);
         }
-        roots.erase(_find(menor));
+        if(menor == nullptr)std::cout<<"AAAAAAAAAAAAAAAAAAAAAAAAAEEEEEEEEEEEEE";
+        std::list<Nodo *> temp;
+        for(Nodo * n : roots){
+            if(n->valor != menor->valor){
+                temp.push_back(n);
+            }
+        }
+        //roots.erase(_find(menor));
+        roots = temp;
         _size--;
         menor = nullptr;
         consolidate();
         return resultado;
     }
-    catch(string e){
-        cout<<e<<endl;
+    catch(std::string e){
+        std::cout<<e<<std::endl;
     }
 }
 
 template <typename T>
-void FibonacciHeap<T>::Nodo::print(ofstream &archivo){
-    string c = "black";
+void FibonacciHeap<T>::Nodo::print(std::ofstream &archivo){
+    std::string c = "black";
     if(color == NEGRO) c = "red";
-    archivo<<valor<<" [label = \""<<valor<<"\" color=\""<<c<<"\"];"<<endl;
+    archivo<<valor<<" [label = \""<<valor<<"\" color=\""<<c<<"\"];"<<std::endl;
     for(auto iter = hijos.begin(); iter != hijos.end(); ++iter){
-        archivo<<valor<<"->"<<(*iter)->valor<<endl;
+        archivo<<valor<<"->"<<(*iter)->valor<<std::endl;
         (*iter)->print(archivo);
     }
 }
 
 template <typename T>
 void FibonacciHeap<T>::print(){
-    ofstream archivo("eje.dot");
+    std::ofstream archivo("eje.dot");
     if(archivo.fail()){
-        cout<<"El archivo no se pudo abrir"<<endl;
+        std::cout<<"El archivo no se pudo abrir"<<std::endl;
         return;
     }
-    archivo<<"digraph{"<<endl;
+    archivo<<"digraph{"<<std::endl;
     for(auto iter = roots.begin(); iter != roots.end(); ++iter){
         (*iter)->print(archivo);
     }
@@ -183,7 +190,7 @@ void FibonacciHeap<T>::print(){
 }
 
 template <typename T>
-void FibonacciHeap<T>::verificarlLista(map<int,Nodo*> &lista, Nodo *&iter){
+void FibonacciHeap<T>::verificarlLista(std::map<int,Nodo*> &lista, Nodo *&iter){
     if(lista.empty()){
         lista[iter->hijos.size()] = iter;
     }
@@ -215,12 +222,12 @@ void FibonacciHeap<T>::verificarlLista(map<int,Nodo*> &lista, Nodo *&iter){
 
 template <typename T>
 void FibonacciHeap<T>::consolidate(){
-    map<int,Nodo *> lista;
+    std::map<int,Nodo *> lista;
     for(auto iter = roots.begin(); iter != roots.end(); ++iter){
         if(!menor or menor->valor > (*iter)->valor) menor = *iter;
         verificarlLista(lista,*iter);
     }
-    list<Nodo *> tempList;
+    std::list<Nodo *> tempList;
     for(auto iter = lista.begin(); iter != lista.end(); ++iter){
         if(iter->second) tempList.push_back(iter->second);
     }
@@ -230,7 +237,8 @@ void FibonacciHeap<T>::consolidate(){
 template <typename T>
 void FibonacciHeap<T>::insert(T valor){
     Nodo *nodo;
-    if(this->find(valor,nodo))return;
+    std::cout<<"INSERT"<<std::endl;
+    //if(this->find(valor,nodo))return;
     Nodo *nuevo = new Nodo(valor);
     roots.push_back(nuevo);
     if(!menor or menor->valor > valor){
@@ -268,9 +276,9 @@ FibonacciHeap<T>::FibonacciHeap(){
 
 template <typename T>
 FibonacciHeap<T>::~FibonacciHeap(){
-    for(auto iter = roots.begin(); iter != roots.end(); ++iter){
-        (*iter)->destruirme();
-    }
+    //for(auto iter = roots.begin(); iter != roots.end(); ++iter){
+      //  (*iter)->destruirme();
+    //}
 }
 
 #endif // FIBONACCIHEAP_H

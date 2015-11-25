@@ -129,10 +129,29 @@ map<int,int> dijkstra(Grafo &grafo, int i){
 }
 */
 
+void imprimir(MyGrafo::Nodo * nodo){
+    cout<<"VALOR->"<<nodo->nombre<<endl;
+}
 
 int main()
 {
-    Grafo g;
+    MyGrafo g;
+
+    g["1"];
+    g["2"];
+    g["3"];
+    g["4"];
+    g["5"];
+    g("1","2",2);
+    g("1","5",3);
+    g("5","2",1);
+    g("5","4",2);
+    g("5","3",9);
+    g("2","3",6);
+    g("4","2",7);
+    g("4","3",1);
+
+    /*
     g["0"];
     g["1"];
     g["2"];
@@ -146,7 +165,20 @@ int main()
     g("2","3",1);
     g("2","4",9);
     g("3","4",1);
-    g.dijkstra("0");
+    auto dis = g.dijkstra("0");
+    for(auto iter = dis.begin(); iter != dis.end(); ++iter){
+        cout<<iter->first<<"->"<<iter->second<<endl;
+    }
+    */
+
     g.print();
+
+    //void (*fun)(MyGrafo::Nodo *);
+    //fun = imprimir;
+    //g.BSF(fun);
+    //g.DSF(fun);
+    MyGrafo arbolito;
+    g.kruskall(arbolito);
+    //arbolito.print();
 
 }
