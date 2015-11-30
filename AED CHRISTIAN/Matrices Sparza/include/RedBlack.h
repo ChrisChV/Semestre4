@@ -29,6 +29,7 @@ class RedBlack
         void print();
         void del(T);
         void insert(T);
+        bool find(T);
         bool find(T, S&);
         list<S> getNodes();
         void rotacionCompleja(Nodo *&, bool);
@@ -42,6 +43,16 @@ class RedBlack
         bool find(T, Nodo **&);
         bool tipoHijo(Nodo *);
 };
+
+template <typename T, typename S>
+bool RedBlack<T,S>::find(T valor){
+    Nodo * nodo = root;
+    while(nodo){
+        if(nodo->valor == valor) return true;
+        nodo = nodo->hijos[nodo->valor < valor];
+    }
+    return false;
+}
 
 template <typename T, typename S>
 list<S> RedBlack<T,S>::getNodes(){

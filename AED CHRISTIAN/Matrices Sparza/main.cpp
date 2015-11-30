@@ -49,5 +49,15 @@ int main()
     Chris[2][16] = 'x';
     Chris[3][16] = 'x';
     Chris[4][16] = 'x';
+    //Chris.delFila(2);
+    //Chris.delFila(0);
+    //Chris.intercambiarFilas(2,0);
+    //Chris.intercambiarColumnas(0,5);
+    //Chris.delCol(4);
+    //Chris.agregarFila(2);
+    Chris.agregarColumna(2);
+    Chris.intercambiarColumnas(16,17);
+    //Chris.intercambiarColumnas(15,16);
+    //hris.intercambiarColumnas(14,15);
     Chris.print();
 }
