@@ -1,6 +1,13 @@
 # depslib dependency file v1.0
-1444356989 source:/home/chris/Documentos/Semestre/Semestre4/Compiling/main.cpp
+1449029785 source:/home/chris/Documentos/Semestre/Semestre4/Compiling/main.cpp
 	<iostream>
 	"fstream"
 	"list"
+	"fstream"
+	"Hombresito.h"
+
+1449018041 source:/home/chris/Documentos/Semestre/Semestre4/Compiling/src/Hombresito.cpp
+
+1449020497 /home/chris/Documentos/Semestre/Semestre4/Compiling/include/Hombresito.h
+	<iostream>
 
