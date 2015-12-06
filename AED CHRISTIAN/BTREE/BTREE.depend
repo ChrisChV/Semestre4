@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1449020820 source:/home/chris/Documentos/Semestre/Semestre4/AED CHRISTIAN/BTREE/src/BT.cpp
+
+1449373909 source:/home/chris/Documentos/Semestre/Semestre4/AED CHRISTIAN/BTREE/main.cpp
+	<iostream>
+	"BT.h"
+
+1449373682 /home/chris/Documentos/Semestre/Semestre4/AED CHRISTIAN/BTREE/include/BT.h
+	"list"
+	"vector"
+	"fstream"
+	"queue"
+	"algorithm"
+
